@@ -33,7 +33,7 @@
                         </div>
                         <div class="mb-1">
                             <i class="las la-calendar-week"></i>
-                            Ngày kết thúc gói : {{$student->end()}}
+                            Ngày kết thúc gói : {{\Carbon\Carbon::create($student->end)->isoFormat("DD-MM-YYYY")}}
                         </div>
                         @if($student->expired())
                             <div class="mb-1">

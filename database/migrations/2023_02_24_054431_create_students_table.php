@@ -17,11 +17,12 @@ return new class extends Migration {
             $table->string("phone");
             $table->date("first");
             $table->date("start");
+            $table->date("end")->nullable();
             $table->string("grade");
             $table->date("birthday");
             $table->longText("note")->nullable();
             $table->longText("avatar");
-            $table->integer("days")->nullable();
+            $table->integer("old")->default(0);
             $table->timestamps();
         });
     }

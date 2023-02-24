@@ -39,16 +39,14 @@ class Student extends Model
         }
     }
 
-    public function end()
+    public function days()
     {
-        $start = $this->start;
-        $end = Carbon::create($start);
-        return $end->addDays($this->days)->isoFormat("DD-MM-YYYY");
+        return Carbon::parse($this->start)->diffInDays($this->end);
     }
 
     public function remaining()
     {
-        return Carbon::parse($this->end())->diffInDays(Carbon::now());
+        return Carbon::parse($this->end)->diffInDays(Carbon::now());
     }
 
     public function isWarning()
@@ -58,7 +56,7 @@ class Student extends Model
 
     public function expired(): bool
     {
-        return Carbon::parse($this->end()) < Carbon::create(now());
+        return Carbon::parse($this->end) < Carbon::create(now());
     }
     /*
     |--------------------------------------------------------------------------

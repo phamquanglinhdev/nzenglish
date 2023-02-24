@@ -186,7 +186,6 @@ class InvoiceCrudController extends CrudController
     {
         $month = (int)$request->cycle ?? 3;
         $repurchase = $request->repurchase ?? null;
-//        dd($repurchase!=null);
         if ($repurchase != null) {
             $student = Student::find($repurchase);
             $start = Carbon::create(now());
@@ -195,8 +194,9 @@ class InvoiceCrudController extends CrudController
                 $days += $student->remaining();
             }
             DB::table("students")->where("id", $repurchase)->update([
-                'days' => $days,
+                'end' => Carbon::parse($start)->addDays($days + 1),
                 'start' => $start,
+                'old' => 0,
             ]);
         }
 

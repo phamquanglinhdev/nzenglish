@@ -7,7 +7,7 @@ use App\Models\Student;
 use Backpack\CRUD\app\Exceptions\BackpackProRequiredException;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use App\Library\CrudPanel\Traits\Read;
+use Carbon\Carbon;
 
 /**
  * Class StudentCrudController
@@ -33,8 +33,10 @@ class StudentCrudController extends CrudController
         CRUD::setModel(\App\Models\Student::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/student');
         CRUD::setEntityNameStrings('Học sinh', 'Danh sách học sinh');
+        $this->crud->disableResponsiveTable();
         $this->crud->setOperationSetting('detailsRow', true);
         $this->crud->denyAccess(["show", "delete"]);
+        $this->crud->addButton("line", "old", "view", "buttons.old", "line");
     }
 
     /**
@@ -45,6 +47,49 @@ class StudentCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+
+        $this->crud->addFilter([
+            'type' => 'text',
+            'name' => 'name',
+            'label' => 'Tên học sinh'
+        ],
+            false,
+            function ($value) { // if the filter is active
+                $this->crud->addClause('where', 'name', 'LIKE', "%$value%");
+            });
+        // dropdown filter
+        $this->crud->addFilter([
+            'type' => 'text',
+            'name' => 'grade',
+            'label' => 'Lớp'
+        ],
+            false,
+            function ($value) { // if the filter is active
+                $this->crud->addClause('where', 'grade', 'LIKE', "%$value%");
+            });
+        $this->crud->addFilter([
+            'name' => 'end',
+            'type' => 'dropdown',
+            'label' => 'Gói học phí'
+        ], [
+            1 => 'Còn hạn',
+            2 => 'Sắp hết hạn ( dưới 7 ngày)',
+            3 => 'Đã hết hạn',
+        ], function ($value) { // if the filter is active
+            switch ($value) {
+                case 1:
+                    $this->crud->query->where('end', ">=", Carbon::parse(now())->addDays(7));
+                    break;
+                case 2:
+                    $this->crud->query->where('end', "<", Carbon::parse(now())->addDays(7))
+                        ->where("end", ">=", Carbon::parse(now()));
+                    break;
+                case 3:
+                    $this->crud->query->where("end", '<', Carbon::parse(now()));
+                    break;
+
+            }
+        });
 //        CRUD::column('origin');
         CRUD::column('id')->label("ID")->prefix("#");
         CRUD::addColumn([
@@ -63,7 +108,7 @@ class StudentCrudController extends CrudController
         ]);
         CRUD::column('phone')->label("Số điện thoại");
         CRUD::column('start')->label("Ngày bắt đầu gói")->type("date");
-        CRUD::column('end_date')->type("model_function")->function_name("end")->label("Ngày kết thúc gói");
+        CRUD::column('end')->type("date")->label("Ngày kết thúc gói");
         CRUD::column('grade')->label("Lớp");
 //
 //        CRUD::column('birthday');
@@ -144,4 +189,13 @@ class StudentCrudController extends CrudController
         ];
         return view("components.student-detail", $bag);
     }
+
+    public function old($id)
+    {
+        Student::find($id)->update([
+            'old' => 1
+        ]);
+        return redirect()->back();
+    }
+
 }
