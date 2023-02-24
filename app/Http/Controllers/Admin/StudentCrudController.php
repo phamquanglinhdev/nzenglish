@@ -34,6 +34,7 @@ class StudentCrudController extends CrudController
         CRUD::setRoute(config('backpack.base.route_prefix') . '/student');
         CRUD::setEntityNameStrings('Học sinh', 'Danh sách học sinh');
         $this->crud->setOperationSetting('detailsRow', true);
+        $this->crud->denyAccess(["show", "delete"]);
     }
 
     /**

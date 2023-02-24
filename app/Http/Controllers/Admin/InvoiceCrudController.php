@@ -8,6 +8,7 @@ use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class InvoiceCrudController
@@ -35,6 +36,7 @@ class InvoiceCrudController extends CrudController
         CRUD::setModel(\App\Models\Invoice::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/invoice');
         CRUD::setEntityNameStrings('Hóa đơn', 'Hóa đơn');
+        $this->crud->denyAccess(["update", "delete"]);
     }
 
     /**
@@ -184,16 +186,16 @@ class InvoiceCrudController extends CrudController
     {
         $month = (int)$request->cycle ?? 3;
         $repurchase = $request->repurchase ?? null;
-
+//        dd($repurchase!=null);
         if ($repurchase != null) {
             $student = Student::find($repurchase);
             $start = Carbon::create(now());
-            $day = Carbon::parse(now())->diffInDays(Carbon::create(now())->addMonths($month));
+            $days = Carbon::parse(now())->diffInDays(Carbon::create(now())->addMonths($month));
             if (!$student->expired()) {
-                $day += $student->remaining();
+                $days += $student->remaining();
             }
-            $student->update([
-                'days' => $day,
+            DB::table("students")->where("id", $repurchase)->update([
+                'days' => $days,
                 'start' => $start,
             ]);
         }

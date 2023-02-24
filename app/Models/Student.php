@@ -33,7 +33,7 @@ class Student extends Model
     */
     public function setDaysAttribute()
     {
-        if ($this->attributes["days"] == null) {
+        if (!isset($this->attributes["days"])) {
             $cycle = (int)$_REQUEST["cycle"];
             $this->attributes["days"] = Carbon::parse($this->start)->diffInDays(Carbon::parse($this->start)->addMonths($cycle));
         }
@@ -55,6 +55,7 @@ class Student extends Model
     {
         return $this->remaining() <= 7;
     }
+
     public function expired(): bool
     {
         return Carbon::parse($this->end()) < Carbon::create(now());

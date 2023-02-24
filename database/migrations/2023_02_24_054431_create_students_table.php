@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->date("birthday");
             $table->longText("note")->nullable();
             $table->longText("avatar");
-            $table->integer("days");
+            $table->integer("days")->nullable();
             $table->timestamps();
         });
     }
