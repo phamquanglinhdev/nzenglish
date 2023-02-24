@@ -127,6 +127,10 @@ class InvoiceCrudController extends CrudController
             }
         }
         CRUD::addField([
+            'name' => 'code',
+            'label' => 'Mã hóa đơn'
+        ]);
+        CRUD::addField([
             'name' => 'value',
             'label' => 'Số tiền',
             'type' => 'number',
@@ -179,25 +183,25 @@ class InvoiceCrudController extends CrudController
     public function store(Request $request)
     {
         $month = (int)$request->cycle ?? 3;
-        $student_id = $request->student_id ?? null;
         $repurchase = $request->repurchase ?? null;
+
         if ($repurchase != null) {
             $student = Student::find($repurchase);
-            if ($student->expired()) {
-                $start = Carbon::create(now());
-            } else {
-                $start = Carbon::create($student->end());
+            $start = Carbon::create(now());
+            $day = Carbon::parse(now())->diffInDays(Carbon::create(now())->addMonths($month));
+            if (!$student->expired()) {
+                $day += $student->remaining();
             }
             $student->update([
-                'days' => Carbon::parse($student->start)->diffInDays(Carbon::create($student->end())->addMonths($request->cycle)),
+                'days' => $day,
                 'start' => $start,
             ]);
         }
 
 
         // do something before validation, before save, before everything
-//        $response = $this->traitStore();
+        $response = $this->traitStore();
         // do something after save
-//        return $response;
+        return $response;
     }
 }
