@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\InvoiceRequest;
+use App\Models\Common;
 use App\Models\Student;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -80,7 +81,7 @@ class InvoiceCrudController extends CrudController
         CRUD::setValidation(InvoiceRequest::class);
         if (isset($_REQUEST["repurchase"])) {
             try {
-                $student = Student::find($_REQUEST["repurchase"]);
+                $student = Common::find($_REQUEST["repurchase"]);
                 CRUD::addField([
                     'name' => 'student_id',
                     'label' => 'Học sinh',
@@ -115,7 +116,7 @@ class InvoiceCrudController extends CrudController
 //
         if (isset($_REQUEST["repurchase"])) {
             try {
-                $student = Student::find($_REQUEST["repurchase"]);
+                $student = Common::find($_REQUEST["repurchase"]);
                 CRUD::addField([
                     'name' => 'name',
                     'label' => 'Tên hóa đơn',
@@ -187,7 +188,7 @@ class InvoiceCrudController extends CrudController
         $month = (int)$request->cycle ?? 3;
         $repurchase = $request->repurchase ?? null;
         if ($repurchase != null) {
-            $student = Student::find($repurchase);
+            $student = Common::find($repurchase);
             $start = Carbon::create(now());
             $days = Carbon::parse(now())->diffInDays(Carbon::create(now())->addMonths($month));
             if (!$student->expired()) {

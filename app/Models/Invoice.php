@@ -38,7 +38,7 @@ class Invoice extends Model
     */
     public function Student()
     {
-        return $this->belongsTo(Student::class, "student_id", "id");
+        return $this->belongsTo(Common::class, "student_id", "id");
     }
     /*
     |--------------------------------------------------------------------------

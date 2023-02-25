@@ -14,7 +14,7 @@ use Carbon\Carbon;
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class StudentCrudController extends CrudController
+class StudentCrudController extends CommonCrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
@@ -47,81 +47,7 @@ class StudentCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-
-        $this->crud->addFilter([
-            'type' => 'text',
-            'name' => 'name',
-            'label' => 'Tên học sinh'
-        ],
-            false,
-            function ($value) { // if the filter is active
-                $this->crud->addClause('where', 'name', 'LIKE', "%$value%");
-            });
-        // dropdown filter
-        $this->crud->addFilter([
-            'type' => 'text',
-            'name' => 'grade',
-            'label' => 'Lớp'
-        ],
-            false,
-            function ($value) { // if the filter is active
-                $this->crud->addClause('where', 'grade', 'LIKE', "%$value%");
-            });
-        $this->crud->addFilter([
-            'name' => 'end',
-            'type' => 'dropdown',
-            'label' => 'Gói học phí'
-        ], [
-            1 => 'Còn hạn',
-            2 => 'Sắp hết hạn ( dưới 7 ngày)',
-            3 => 'Đã hết hạn',
-        ], function ($value) { // if the filter is active
-            switch ($value) {
-                case 1:
-                    $this->crud->query->where('end', ">=", Carbon::parse(now())->addDays(7));
-                    break;
-                case 2:
-                    $this->crud->query->where('end', "<", Carbon::parse(now())->addDays(7))
-                        ->where("end", ">=", Carbon::parse(now()));
-                    break;
-                case 3:
-                    $this->crud->query->where("end", '<', Carbon::parse(now()));
-                    break;
-
-            }
-        });
-//        CRUD::column('origin');
-        CRUD::column('id')->label("ID")->prefix("#");
-        CRUD::addColumn([
-            'name' => 'name',
-            'label' => 'Tên học sinh',
-            'wrapper' => [
-                'element' => 'span',
-                'class' => function ($crud, $column, $entry) {
-                    if ($entry->expired()) {
-                        return 'bg-dark text-white p-1 rounded';
-                    } elseif ($entry->isWarning()) {
-                        return 'bg-warning text-white p-1 rounded';
-                    }
-                }
-            ]
-        ]);
-        CRUD::column('phone')->label("Số điện thoại");
-        CRUD::column('start')->label("Ngày bắt đầu gói")->type("date");
-        CRUD::column('end')->type("date")->label("Ngày kết thúc gói");
-        CRUD::column('grade')->label("Lớp");
-//
-//        CRUD::column('birthday');
-//        CRUD::column('note');
-//        CRUD::column('avatar');
-//        CRUD::column('created_at');
-//        CRUD::column('updated_at');
-
-        /**
-         * Columns can be defined using the fluent syntax or array syntax:
-         * - CRUD::column('price')->type('number');
-         * - CRUD::addColumn(['name' => 'price', 'type' => 'number']);
-         */
+        parent::setupListOperation();
     }
 
     /**
@@ -132,43 +58,10 @@ class StudentCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
+        parent::setupCreateOperation();
         CRUD::setValidation(StudentRequest::class);
 
-        CRUD::field('origin')
-            ->label("Chi nhánh")
-            ->type("select_from_array")
-            ->options([
-                1 => 'Chi nhánh TPHCM',
-                2 => 'Chi nhánh Bình Dương',
-                3 => 'Chi nhanh Hà Nội',
-            ]);
-        CRUD::field('name')->label("Tên học sinh");
-        CRUD::field('birthday')->label("Ngày tháng năm sinh")->wrapper([
-            'class' => 'col-md-6 mb-2'
-        ]);
-        CRUD::field('first')->label("Ngày bắt đầu học")->wrapper([
-            'class' => 'col-md-6 mb-2'
-        ]);
-        CRUD::field('avatar')->type("image")->crop(true)->aspect_ratio(1);
-        CRUD::field('phone')->label("Số điện thoại")->type("phone");
-        CRUD::field('grade')->label("Tên lớp");
-        CRUD::field('days')->type("hidden");
-        CRUD::field('start')->label("Ngày bắt đầu gói")->type("date")->wrapper([
-            'class' => 'col-md-6 mb-2'
-        ]);
-        CRUD::field('cycle')->label("Chu kỳ")->type("number")->options([
-        ])->default(3)->wrapper([
-            'class' => 'col-md-6 mb-2'
-        ]);
 
-
-        CRUD::field('note')->label("Ghi chú");
-
-        /**
-         * Fields can be defined using the fluent syntax or array syntax:
-         * - CRUD::field('price')->type('number');
-         * - CRUD::addField(['name' => 'price', 'type' => 'number']));
-         */
     }
 
     /**

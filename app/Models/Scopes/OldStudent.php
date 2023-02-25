@@ -10,10 +10,10 @@ use Illuminate\Support\Facades\DB;
 class OldStudent implements Scope
 {
     /**
-     * Apply the scope to a given Eloquent query builder.
+     * Apply the scope to a given Eloquent query builder.s
      */
     public function apply(Builder $builder, Model $model): void
     {
-        $builder->where('old', 1);
+        $builder->where("old", 1);
     }
 }

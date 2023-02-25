@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\StudentCrudController;
+use App\Http\Controllers\OriginController;
 use Illuminate\Support\Facades\Route;
 
 // --------------------------
@@ -19,6 +20,12 @@ Route::group([
 ], function () { // custom admin routes
     Route::crud('student', 'StudentCrudController');
     Route::get('student/{id}/old', [StudentCrudController::class, "old", "id"])->name("student.old");
+    Route::get('origin', [OriginController::class, "select"])->name("origin");
     Route::crud('invoice', 'InvoiceCrudController');
     Route::crud('old', 'OldCrudController');
+    Route::crud('grade', 'GradeCrudController');
+    Route::crud('logs', 'LogCrudController');
+    Route::crud('user', 'UserCrudController');
+    Route::get('charts/weekly-users', 'Charts\WeeklyUsersChartController@response')->name('charts.weekly-users.index');
+    Route::get('charts/daily-log', 'Charts\DailyLogChartController@response')->name('charts.daily-log.index');
 }); // this should be the absolute last line of this file

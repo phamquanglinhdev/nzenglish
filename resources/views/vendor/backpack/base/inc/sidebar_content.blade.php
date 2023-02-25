@@ -16,3 +16,30 @@
                 Hóa đơn</a></li>
     </ul>
 </li>
+<li class="nav-item nav-dropdown">
+    <a class="nav-link nav-dropdown-toggle" href="#"><i class="nav-icon la la-group"></i>Quản lý lớp học</a>
+    <ul class="nav-dropdown-items">
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('grade') }}"><i
+                    class="nav-icon la la-boxes"></i> Lớp học</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('logs') }}"><i
+                    class="nav-icon la la-history"></i> Nhật ký lớp học</a></li>
+    </ul>
+</li>
+<li class="nav-item nav-dropdown">
+    <a class="nav-link nav-dropdown-toggle" href="#"><i class="nav-icon la la-briefcase"></i>Quản lý văn phòng</a>
+    <ul class="nav-dropdown-items">
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('user') }}"><i
+                    class="nav-icon la la-user"></i> Người
+                dùng</a></li>
+    </ul>
+</li>
+<li class="nav-item nav-dropdown">
+    <a class="nav-link nav-dropdown-toggle" href="#"><i class="nav-icon la la-unlock-alt"></i>Quản lý phần mềm</a>
+    <ul class="nav-dropdown-items">
+        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('backup') }}'><i class='nav-icon la la-hdd-o'></i> Backups</a></li>
+        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('log') }}'><i class='nav-icon la la-terminal'></i> Logs</a></li>
+        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('setting') }}'><i class='nav-icon las la-cog'></i> Cài đặt</a></li>
+    </ul>
+</li>
+
+

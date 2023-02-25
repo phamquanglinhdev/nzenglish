@@ -125,7 +125,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
         ],
 
         'default' => [
@@ -147,5 +147,10 @@ return [
         ],
 
     ],
+    'dump' => [
+        'dump_binary_path' => '/Applications/MAMP/Library/bin/', // only the path, so without `mysqldump` or `pg_dump`
+        'use_single_transaction',
+        'timeout' => 60 * 5, // 5 minute timeout
+    ]
 
 ];

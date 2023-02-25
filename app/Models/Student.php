@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\OldStudent;
+use App\Models\Scopes\StudentScope;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Student extends Model
+class Student extends Common
 {
     use CrudTrait;
     use HasFactory;
@@ -17,6 +19,13 @@ class Student extends Model
     | GLOBAL VARIABLES
     |--------------------------------------------------------------------------
     */
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(new StudentScope);
+    }
+
+
 
     protected $table = 'students';
     // protected $primaryKey = 'id';
@@ -31,33 +40,7 @@ class Student extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
-    public function setDaysAttribute()
-    {
-        if (!isset($this->attributes["days"])) {
-            $cycle = (int)$_REQUEST["cycle"];
-            $this->attributes["days"] = Carbon::parse($this->start)->diffInDays(Carbon::parse($this->start)->addMonths($cycle));
-        }
-    }
 
-    public function days()
-    {
-        return Carbon::parse($this->start)->diffInDays($this->end);
-    }
-
-    public function remaining()
-    {
-        return Carbon::parse($this->end)->diffInDays(Carbon::now());
-    }
-
-    public function isWarning()
-    {
-        return $this->remaining() <= 7;
-    }
-
-    public function expired(): bool
-    {
-        return Carbon::parse($this->end) < Carbon::create(now());
-    }
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
