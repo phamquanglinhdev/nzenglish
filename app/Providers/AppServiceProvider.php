@@ -7,6 +7,7 @@ use App\Models\Student;
 use Backpack\Settings\app\Models\Setting;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\View;
 
@@ -25,6 +26,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-//        dd(Setting::get("app_name"));
+        Schema::defaultStringLength(191);
     }
 }
