@@ -34,7 +34,7 @@
             <div class="col-sm-6 col-lg-3">
                 <a class="card border-0 text-white bg-gray card-link" href="{{backpack_url("/old")}}">
                     <div class="card-body">
-                        <div class="text-value">{{\App\Models\Dashboard::expired()}}</div>
+                        <div class="text-value">{{\App\Models\Dashboard::old()}}</div>
                         <div>Học sinh cũ.</div>
 
                     </div>

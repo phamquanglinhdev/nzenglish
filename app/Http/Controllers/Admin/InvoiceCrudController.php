@@ -128,6 +128,11 @@ class InvoiceCrudController extends CrudController
                     'label' => 'Tên hóa đơn',
                 ]);
             }
+        }else{
+            CRUD::addField([
+                'name' => 'name',
+                'label' => 'Tên hóa đơn',
+            ]);
         }
         CRUD::addField([
             'name' => 'code',

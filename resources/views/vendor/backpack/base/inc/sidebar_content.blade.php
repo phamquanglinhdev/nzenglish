@@ -11,9 +11,15 @@
                 Học sinh đang học</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('old') }}"><i
                     class="nav-icon la la-user-clock"></i> Học sinh cũ</a></li>
+    </ul>
+</li>
+<li class="nav-item nav-dropdown">
+    <a class="nav-link nav-dropdown-toggle" href="#"><i class="nav-icon la la-piggy-bank"></i>Quản lý tài chính</a>
+    <ul class="nav-dropdown-items">
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('invoice') }}"><i
                     class="nav-icon la la-file-invoice-dollar"></i>
                 Hóa đơn</a></li>
+        </li>
     </ul>
 </li>
 <li class="nav-item nav-dropdown">
@@ -31,15 +37,33 @@
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('user') }}"><i
                     class="nav-icon la la-user"></i> Người
                 dùng</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('work') }}"><i
+                    class="nav-icon la la-briefcase"></i> Nhật ký làm việc</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('document') }}"><i
+                    class="nav-icon la la-file"></i>Tài liệu</a></li>
+        <li class="nav-item nav-dropdown">
+            <a class="nav-link nav-dropdown-toggle" href="#"><i class="nav-icon las la-swatchbook"></i>Quản lý giáo
+                trình</a>
+            <ul class="nav-dropdown-items">
+                <li class="nav-item"><a class="nav-link" href="{{ backpack_url('basket') }}"><i
+                            class="nav-icon la la-list-ul"></i>
+                        Danh mục</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ backpack_url('book') }}"><i
+                            class="nav-icon la la-book"></i>Giáo trình</a>
+                </li>
+            </ul>
+        </li>
     </ul>
 </li>
 <li class="nav-item nav-dropdown">
     <a class="nav-link nav-dropdown-toggle" href="#"><i class="nav-icon la la-unlock-alt"></i>Quản lý phần mềm</a>
     <ul class="nav-dropdown-items">
-        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('backup') }}'><i class='nav-icon la la-hdd-o'></i> Backups</a></li>
-        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('log') }}'><i class='nav-icon la la-terminal'></i> Logs</a></li>
-        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('setting') }}'><i class='nav-icon las la-cog'></i> Cài đặt</a></li>
+        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('backup') }}'><i
+                    class='nav-icon la la-hdd-o'></i> Backups</a></li>
+        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('log') }}'><i
+                    class='nav-icon la la-terminal'></i> Logs</a></li>
+        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('setting') }}'><i
+                    class='nav-icon las la-cog'></i> Cài đặt</a></li>
     </ul>
 </li>
-
 

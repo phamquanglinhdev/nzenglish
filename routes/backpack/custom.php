@@ -28,4 +28,8 @@ Route::group([
     Route::crud('user', 'UserCrudController');
     Route::get('charts/weekly-users', 'Charts\WeeklyUsersChartController@response')->name('charts.weekly-users.index');
     Route::get('charts/daily-log', 'Charts\DailyLogChartController@response')->name('charts.daily-log.index');
+    Route::crud('work', 'WorkCrudController');
+    Route::crud('document', 'DocumentCrudController');
+    Route::crud('basket', 'BasketCrudController');
+    Route::crud('book', 'BookCrudController');
 }); // this should be the absolute last line of this file
