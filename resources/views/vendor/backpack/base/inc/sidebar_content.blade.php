@@ -16,9 +16,11 @@
 <li class="nav-item nav-dropdown">
     <a class="nav-link nav-dropdown-toggle" href="#"><i class="nav-icon la la-piggy-bank"></i>Quản lý tài chính</a>
     <ul class="nav-dropdown-items">
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('pack') }}"><i class="nav-icon las la-coins"></i> Gói mặc định</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('extend') }}"><i class="nav-icon la la-file-invoice-dollar"></i> Hóa đơn gia hạn</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('invoice') }}"><i
                     class="nav-icon la la-file-invoice-dollar"></i>
-                Hóa đơn</a></li>
+                Hóa đơn khác</a></li>
         </li>
     </ul>
 </li>
@@ -68,5 +70,3 @@
 </li>
 
 
-<li class="nav-item"><a class="nav-link" href="{{ backpack_url('pack') }}"><i class="nav-icon la la-question"></i> Packs</a></li>
-<li class="nav-item"><a class="nav-link" href="{{ backpack_url('extend') }}"><i class="nav-icon la la-question"></i> Extends</a></li>

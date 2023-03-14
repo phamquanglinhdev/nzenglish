@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Operations\ExtendOperation;
 use App\Http\Requests\ExtendRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -18,7 +19,7 @@ class ExtendCrudController extends InvoiceCrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
-
+    use ExtendOperation;
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
      *
@@ -40,8 +41,10 @@ class ExtendCrudController extends InvoiceCrudController
      */
     protected function setupListOperation()
     {
+//        CRUD::addButton('line', 'extend', 'view', 'crud::buttons.extend');
         parent::setupListOperation();
         $this->crud->removeColumn("pack");
+        $this->crud->removeColumn("confirm");
         CRUD::addColumn([
             'name' => 'start_extend',
             'label' => 'Ngày bắt đầu',

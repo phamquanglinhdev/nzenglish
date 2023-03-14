@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\StudentRequest;
+use App\Models\Extend;
 use App\Models\Student;
+use App\Services\ExtendStudentServices;
 use Backpack\CRUD\app\Exceptions\BackpackProRequiredException;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Carbon\Carbon;
+use http\Client\Request;
 
 /**
  * Class StudentCrudController
@@ -91,4 +94,12 @@ class StudentCrudController extends CommonCrudController
         return redirect()->back();
     }
 
+    public function extend(\Illuminate\Http\Request $request)
+    {
+        $services = new ExtendStudentServices($request->id ?? null);
+        if ($services->update()) {
+            return response()->json(null, 200);
+        }
+        return response()->json(null, 500);
+    }
 }

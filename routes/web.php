@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\EditableController;
+use App\Http\Controllers\Admin\StudentCrudController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,3 +19,4 @@ Route::get('/', function () {
     return redirect("/admin");
 });
 Route::post("/editable", [EditableController::class, "update"])->name("editable");
+Route::post("/extend", [StudentCrudController::class, "extend"])->name("extend");
