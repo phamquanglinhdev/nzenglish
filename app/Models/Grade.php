@@ -54,7 +54,9 @@ class Grade extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
-
+    public function Students(){
+        return $this->belongsToMany(Student::class,"student_grade","grade_id","student_id");
+    }
     /*
     |--------------------------------------------------------------------------
     | ACCESSORS

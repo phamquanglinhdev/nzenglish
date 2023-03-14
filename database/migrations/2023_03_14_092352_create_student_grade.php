@@ -12,9 +12,9 @@ return new class extends Migration {
     {
         Schema::create('student_grade', function (Blueprint $table) {
             $table->unsignedBigInteger("student_id");
-            $table->foreign("student_id")->references("id")->on("student");
+            $table->foreign("student_id")->references("id")->on("students");
             $table->unsignedBigInteger("grade_id");
-            $table->foreign("grade_id")->references("id")->on("grade");
+            $table->foreign("grade_id")->references("id")->on("grades");
             $table->timestamps();
         });
     }

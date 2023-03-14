@@ -71,6 +71,7 @@ class GradeCrudController extends CrudController
                 3 => 'Chi nhanh Hà Nội',
             ]
         ]);
+
         /**
          * Columns can be defined using the fluent syntax or array syntax:
          * - CRUD::column('price')->type('number');
@@ -99,7 +100,14 @@ class GradeCrudController extends CrudController
         ]);
         CRUD::field('name')->label("Tên lớp");
         CRUD::field('status')->label("Tình trạng lớp");
-
+        CRUD::addField([
+            'name' => 'students',
+            'type' => 'relationship',
+            'entity' => 'Students',
+            'model' => 'App\Models\Student',
+            'attribute' => 'name',
+            'label' => 'Học sinh',
+        ]);
         /**
          * Fields can be defined using the fluent syntax or array syntax:
          * - CRUD::field('price')->type('number');

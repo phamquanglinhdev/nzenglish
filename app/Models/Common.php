@@ -65,12 +65,16 @@ class Common extends Model
     {
         return Carbon::parse($this->end) < Carbon::create(now());
     }
+
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-
+    public function Grades()
+    {
+        return $this->belongsToMany(Grade::class, "student_grade", "student_id", "grade_id");
+    }
     /*
     |--------------------------------------------------------------------------
     | SCOPES

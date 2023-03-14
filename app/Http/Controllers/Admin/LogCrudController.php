@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\LogRequest;
+use App\Models\Grade;
+use App\Models\Student;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Backpack\CRUD\app\Library\Widget;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cookie;
@@ -86,20 +89,54 @@ class LogCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation(LogRequest::class);
-        CRUD::field('grade_id')->label("Lớp")->type("select2")->wrapper([
-            'class' => 'col-md-6 mb-3'
-        ]);
-        CRUD::field("date")->type("date")->label("Ngày")->wrapper([
-            'class' => 'col-md-6 mb-3'
-        ]);;
-        CRUD::field('attendances')->label("Sĩ số")->suffix("Học sinh")->wrapper([
-            'class' => 'col-md-6 mb-3'
-        ]);
-        CRUD::field('status')->label("Tình trạng buổi học")->type("select_from_array")->options(['Tốt', 'Không tốt'])->wrapper([
-            'class' => 'col-md-6 mb-3'
-        ]);
-        CRUD::field('note')->label("Ghi chú");
-        CRUD::field("author_id")->value(backpack_user()->id)->type("hidden");
+        if (!isset($_REQUEST["grade_id"])) {
+            CRUD::field('grade_id')->label("Lớp")->type("select2")->wrapper([
+                'id' => 'pre-create',
+            ]);
+        } else {
+            $grade = Grade::find($_REQUEST["grade_id"]);
+            if (!isset($grade->id)) {
+                CRUD::field('grade_id')->label("Lớp")->type("select2")->wrapper([
+                    'id' => 'pre-create',
+                ]);
+            } else {
+                CRUD::field('grade_id')->type("hidden")->value($grade->id);
+                CRUD::field('grade_at')->label("Lớp")->type("text")->value($grade->name)->wrapper([
+                    'class' => 'col-md-6 mb-3'
+                ])->attributes(["disabled" => true]);
+                CRUD::field("date")->type("date")->label("Ngày")->wrapper([
+                    'class' => 'col-md-6 mb-3'
+                ]);
+                CRUD::field('attendances')->label("Sĩ số")->suffix("Học sinh")->wrapper([
+                    'class' => 'col-md-6 mb-3'
+                ]);
+                CRUD::field('status')->label("Tình trạng buổi học")->type("select_from_array")->options(['Tốt', 'Không tốt'])->wrapper([
+                    'class' => 'col-md-6 mb-3'
+                ]);
+                $students = $grade->Students()->get(["name"]);
+                CRUD::addField(
+                    [   // Table
+                        'name' => 'extras',
+                        'label' => 'Options',
+                        'type' => 'table',
+                        'entity_singular' => 'option', // used on the "Add X" button
+                        'columns' => [
+                            'name' => 'Tên học sinh',
+                            'comment' => 'Nhận xét',
+                            'point' => 'Điểm số'
+                        ],
+                        'default' => $students->toJson(),
+                        'max' => $students->count(), // maximum rows allowed in the table
+                        'min' => $students->count(), // minimum rows allowed in the table
+                    ],
+                );
+                CRUD::field('note')->label("Ghi chú");
+                CRUD::field("author_id")->value(backpack_user()->id)->type("hidden");
+            }
+
+        }
+        Widget::add()->type('script')->content('/js/pre-create.js');
+
         /**
          * Fields can be defined using the fluent syntax or array syntax:
          * - CRUD::field('price')->type('number');
@@ -115,6 +152,7 @@ class LogCrudController extends CrudController
      */
     protected function setupUpdateOperation()
     {
+        $_REQUEST["grade_id"] = $this->crud->getCurrentEntry()->Grade()->first()->id;
         $this->setupCreateOperation();
     }
 

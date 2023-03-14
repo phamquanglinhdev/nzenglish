@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('logs', function (Blueprint $table) {
             $table->id();
             $table->date("date");
-            $table->unsignedBigInteger("grade_id");
+            $table->unsignedBigInteger("grade_id")->nullable();
             $table->foreign("grade_id")->references("id")->on("grades");
             $table->integer("attendances");
             $table->integer("status");
