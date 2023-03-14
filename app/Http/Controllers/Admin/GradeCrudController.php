@@ -29,6 +29,7 @@ class GradeCrudController extends CrudController
         CRUD::setModel(\App\Models\Grade::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/grade');
         CRUD::setEntityNameStrings('Lớp học', 'Lớp học');
+
         $this->crud->addFilter(
             [
                 'name' => 'name',
@@ -57,9 +58,19 @@ class GradeCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+
         CRUD::column('name')->label("Tên lớp");
         CRUD::column('status')->label("Tình trạng lớp");
-
+        CRUD::addColumn([
+            'name' => 'origin',
+            'type' => (backpack_user()->role == "admin" || backpack_user()->role == "staff") ? "select_editable" : "select_from_array",
+            'label' => 'Chi nhánh',
+            'options' => [
+                1 => 'Chi nhánh TPHCM',
+                2 => 'Chi nhánh Bình Dương',
+                3 => 'Chi nhanh Hà Nội',
+            ]
+        ]);
         /**
          * Columns can be defined using the fluent syntax or array syntax:
          * - CRUD::column('price')->type('number');
@@ -76,7 +87,16 @@ class GradeCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation(GradeRequest::class);
-
+        CRUD::addField([
+            'name' => 'origin',
+            'type' => "select_from_array",
+            'label' => 'Chi nhánh',
+            'options' => [
+                1 => 'Chi nhánh TPHCM',
+                2 => 'Chi nhánh Bình Dương',
+                3 => 'Chi nhanh Hà Nội',
+            ]
+        ]);
         CRUD::field('name')->label("Tên lớp");
         CRUD::field('status')->label("Tình trạng lớp");
 

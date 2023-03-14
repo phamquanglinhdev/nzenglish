@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\UserRequest;
+use App\Http\Requests\ExtendRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
- * Class UserCrudController
+ * Class ExtendCrudController
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class UserCrudController extends CrudController
+class ExtendCrudController extends InvoiceCrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
@@ -26,9 +26,10 @@ class UserCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\User::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/user');
-        CRUD::setEntityNameStrings('Người dùng', 'Nguời dùng');
+        CRUD::setModel(\App\Models\Extend::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/extend');
+        CRUD::setEntityNameStrings('Hóa đơn gia hạn', 'Hóa đơn gia hạn');
+        $this->crud->denyAccess(["create", "update"]);
     }
 
     /**
@@ -39,23 +40,18 @@ class UserCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-
-        CRUD::column('name')->label("Tên");
-        CRUD::column('email');
-        CRUD::column('role')->label("Phân quyền")->type("select_from_array")->options([
-            'admin' => 'Quản trị viên',
-            'staff' => 'Biên tập viên',
-            'viewer' => 'Theo dõi viên',
+        parent::setupListOperation();
+        $this->crud->removeColumn("pack");
+        CRUD::addColumn([
+            'name' => 'start_extend',
+            'label' => 'Ngày bắt đầu',
+            'type' => 'date'
         ]);
-        CRUD::column('origin')
-            ->label("Chi nhánh")
-            ->type("select_editable")
-            ->options([
-                1 => 'Chi nhánh TPHCM',
-                2 => 'Chi nhánh Bình Dương',
-                3 => 'Chi nhanh Hà Nội',
-            ]);
-
+        CRUD::addColumn([
+            'name' => 'month',
+            'label' => 'Chu kỳ gia hạn',
+            'suffix' => ' tháng'
+        ]);
 
         /**
          * Columns can be defined using the fluent syntax or array syntax:
@@ -72,24 +68,18 @@ class UserCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation(UserRequest::class);
-        CRUD::field('origin')
-            ->label("Chi nhánh")
-            ->type("select_from_array")
-            ->options([
-                1 => 'Chi nhánh TPHCM',
-                2 => 'Chi nhánh Bình Dương',
-                3 => 'Chi nhanh Hà Nội',
-            ]);
-        CRUD::field('name')->label("Họ và tên");
-        CRUD::field('email')->label("Địa chỉ email");
-        CRUD::field('password')->type("password")->label("Mật khẩu");
-        CRUD::field('role')->label("Phân quyền")->type("select2_from_array")->default("viewer")->options([
-            'admin' => 'Quản trị viên',
-            'staff' => 'Biên tập viên (Chỉnh sửa)',
-            'viewer' => 'Theo dõi viên (Không có quyền chỉnh sửa)',
-        ]);
+        CRUD::setValidation(ExtendRequest::class);
 
+        CRUD::field('code');
+        CRUD::field('confirm');
+        CRUD::field('image');
+        CRUD::field('method');
+        CRUD::field('name');
+        CRUD::field('note');
+        CRUD::field('pack_id');
+        CRUD::field('staff_id');
+        CRUD::field('student_id');
+        CRUD::field('value');
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:

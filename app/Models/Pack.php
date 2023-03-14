@@ -2,16 +2,11 @@
 
 namespace App\Models;
 
-use App\Models\Scopes\OriginLogScope;
-use App\Models\Scopes\OriginScope;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Cookie;
 
-class Log extends Model
+class Pack extends Model
 {
     use CrudTrait;
     use HasFactory;
@@ -22,22 +17,7 @@ class Log extends Model
     |--------------------------------------------------------------------------
     */
 
-
-    protected static function boot()
-    {
-        parent::boot();
-        static::addGlobalScope(new OriginLogScope);
-    }
-
-    protected function logScope($query)
-    {
-        $origin = Cookie::get("origin") ?? 1;
-        return $query->whereHas("grade", function (Builder $builder) use ($origin) {
-            $builder->where("origin", $origin);
-        });
-    }
-
-    protected $table = 'logs';
+    protected $table = 'packs';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
@@ -50,21 +30,16 @@ class Log extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
-
+    public function setPackageAttribute()
+    {
+        $this->attributes["items"] = $this->name . "(" . $this->value . ")";
+    }
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function Grade()
-    {
-        return $this->belongsTo(Grade::class, "grade_id", "id");
-    }
 
-    public function Author(): BelongsTo
-    {
-        return $this->belongsTo(User::class, "author_id", "id");
-    }
     /*
     |--------------------------------------------------------------------------
     | SCOPES

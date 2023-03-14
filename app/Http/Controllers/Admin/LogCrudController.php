@@ -7,6 +7,7 @@ use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cookie;
 
 /**
  * Class LogCrudController
@@ -52,7 +53,14 @@ class LogCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::column('grade_id')->label("Lớp")->type("select");
+        CRUD::addColumn([
+            'name' => 'grade_id',
+            'type' => 'select',
+            'option' => function ($query) {
+                $origin = Cookie::get("origin") ?? 1;
+                return $query->where("origin", $origin);
+            }
+        ]);
         CRUD::column("date")->type("date")->label("Ngày");
         CRUD::column('attendances')->label("Sĩ số");
 //        CRUD::column('note');

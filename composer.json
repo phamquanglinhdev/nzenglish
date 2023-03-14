@@ -8,6 +8,7 @@
         "php": "^8.1",
         "backpack/backupmanager": "^4.0",
         "backpack/crud": "^5.5",
+        "backpack/generators": "^3.3",
         "backpack/logmanager": "^4.0",
         "backpack/settings": "^3.0",
         "consoletvs/charts": "6.*",
@@ -17,7 +18,6 @@
         "laravel/tinker": "^2.8"
     },
     "require-dev": {
-        "backpack/generators": "^3.3",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",

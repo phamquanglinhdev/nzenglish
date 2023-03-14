@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Operations\AcceptOperation;
+use App\Http\Controllers\Admin\Operations\ConfirmOperation;
 use App\Http\Requests\InvoiceRequest;
 use App\Models\Common;
+use App\Models\Pack;
 use App\Models\Student;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -23,9 +27,7 @@ class InvoiceCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation {
-        store as traitStore;
-    }
+    use ConfirmOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -48,19 +50,58 @@ class InvoiceCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+
         CRUD::addColumn([
             'name' => 'student',
             'label' => 'Học sinh'
         ]);
+
         CRUD::addColumn([
             'name' => 'name',
             'label' => 'Tên hóa đơn'
+        ]);
+        CRUD::addColumn([
+            'name' => 'pack',
+            'label' => 'Loại hóa đơn'
         ]);
         CRUD::addColumn([
             'name' => 'value',
             'label' => 'Số tiền',
             'type' => 'number',
             'suffix' => ' đ',
+        ]);
+        if (backpack_user()->role == "admin" || backpack_user()->role == "staff") {
+            CRUD::addColumn([
+                'name' => 'confirm',
+                'label' => 'Duyệt',
+                'type' => 'select_editable',
+                'options' => [
+                    0 => 'Đang chờ',
+                    1 => 'Đã duyệt',
+                    2 => 'Đã hủy'
+                ]
+            ]);
+        } else {
+            CRUD::addColumn([
+                'name' => 'confirm',
+                'label' => 'Trạng thái',
+                'type' => 'select_from_array',
+                'options' => [
+                    0 => 'Đang chờ',
+                    1 => 'Đã duyệt',
+                    2 => 'Đã hủy'
+                ]
+            ]);
+        }
+        CRUD::addColumn([
+            'name' => 'created_at',
+            'type' => 'date',
+            'label' => 'Ngày tạo'
+        ]);
+        CRUD::addColumn([
+            'name' => 'staff_id',
+            'label' => 'Nhân viên tạo'
+
         ]);
 
         /**
@@ -84,15 +125,31 @@ class InvoiceCrudController extends CrudController
                 $student = Common::find($_REQUEST["repurchase"]);
                 CRUD::addField([
                     'name' => 'student_id',
+                    'type' => 'hidden',
                     'label' => 'Học sinh',
                     'value' => $student->id,
+                ]);
+                CRUD::addField([
+                    'name' => 'student_at',
+                    'type' => 'text',
+                    'label' => 'Học sinh',
+                    'value' => $student->name,
                     'wrapper' => [
                         'class' => 'col-md-6 mb-2'
+                    ],
+                    'attributes' => [
+                        'disabled' => true,
                     ]
                 ]);
-                CRUD::field('cycle')->label("Chu kỳ")->type("number")->suffix("Tháng")->value($student->cycle)->wrapper([
+                CRUD::field('month')->label("Chu kỳ")->type("number")->suffix("Tháng")->value($student->cycle)->wrapper([
                     'class' => 'col-md-6 mb-2'
                 ]);
+                CRUD::addField([
+                    'name' => "pack_id",
+                    'type' => 'hidden',
+                    'value' => Pack::where("name", "Gia hạn học phí")->first()->id,
+                ]);
+                CRUD::field("start_extend")->label("Ngày bắt đầu")->type("date");
                 CRUD::addField([
                     'name' => 'repurchase',
                     'value' => $student->id,
@@ -102,7 +159,12 @@ class InvoiceCrudController extends CrudController
                 CRUD::addField([
                     'name' => 'student_id',
                     'label' => 'Học sinh',
-                    'value' => ''
+                    'value' => '',
+                    'type' => 'select2',
+                    'option' => function ($query) {
+                        $origin = Cookie::get("origin") ?? 1;
+                        return $query->where("origin", $origin);
+                    }
                 ]);
             }
 
@@ -110,7 +172,13 @@ class InvoiceCrudController extends CrudController
             CRUD::addField([
                 'name' => 'student_id',
                 'label' => 'Học sinh',
-                'value' => ''
+                'value' => '',
+                'type' => 'select2',
+                'option' => function ($query) {
+                    $origin = Cookie::get("origin") ?? 1;
+                    $query->where("origin", $origin);
+                }
+
             ]);
         }
 //
@@ -128,23 +196,34 @@ class InvoiceCrudController extends CrudController
                     'label' => 'Tên hóa đơn',
                 ]);
             }
-        }else{
+        } else {
+            CRUD::addField([
+                'name' => "pack_id",
+                'label' => 'Loại hóa đơn',
+                'type' => 'select2',
+                'attribute' => 'name',
+                'attributes' => [
+                    'mode' => 'event',
+                    'db' => 'packs',
+                ]
+            ]);
             CRUD::addField([
                 'name' => 'name',
                 'label' => 'Tên hóa đơn',
             ]);
         }
         CRUD::addField([
-            'name' => 'code',
-            'label' => 'Mã hóa đơn'
-        ]);
-        CRUD::addField([
             'name' => 'value',
             'label' => 'Số tiền',
             'type' => 'number',
             'suffix' => ' đ',
             'wrapper' => [
-                'class' => 'col-md-6 mb-2'
+                'class' => 'col-md-6 mb-2',
+
+            ],
+            'attributes' => [
+                'mode' => 'listener',
+                'from' => 'packs'
             ]
         ]);
         CRUD::addField([
@@ -160,6 +239,11 @@ class InvoiceCrudController extends CrudController
             ]
         ]);
         CRUD::addField([
+            'name' => 'code',
+            'label' => 'Mã hóa đơn'
+        ]);
+
+        CRUD::addField([
             'name' => 'image',
             'label' => 'Hình ảnh',
             'type' => 'image',
@@ -169,7 +253,11 @@ class InvoiceCrudController extends CrudController
             'label' => 'Ghi chú',
             'type' => 'textarea',
         ]);
-
+        CRUD::addField([
+            'name' => 'staff_id',
+            'value' => backpack_user()->id,
+            'type' => 'hidden',
+        ]);
         /**
          * Fields can be defined using the fluent syntax or array syntax:
          * - CRUD::field('price')->type('number');
@@ -188,28 +276,28 @@ class InvoiceCrudController extends CrudController
         $this->setupCreateOperation();
     }
 
-    public function store(Request $request)
-    {
-        $month = (int)$request->cycle ?? 3;
-        $repurchase = $request->repurchase ?? null;
-        if ($repurchase != null) {
-            $student = Common::find($repurchase);
-            $start = Carbon::create(now());
-            $days = Carbon::parse(now())->diffInDays(Carbon::create(now())->addMonths($month));
-            if (!$student->expired()) {
-                $days += $student->remaining();
-            }
-            DB::table("students")->where("id", $repurchase)->update([
-                'end' => Carbon::parse($start)->addDays($days + 1),
-                'start' => $start,
-                'old' => 0,
-            ]);
-        }
-
-
-        // do something before validation, before save, before everything
-        $response = $this->traitStore();
-        // do something after save
-        return $response;
-    }
+//    public function store(Request $request)
+//    {
+//        $month = (int)$request->cycle ?? 3;
+//        $repurchase = $request->repurchase ?? null;
+//        if ($repurchase != null) {
+//            $student = Common::find($repurchase);
+//            $start = Carbon::create(now());
+//            $days = Carbon::parse(now())->diffInDays(Carbon::create(now())->addMonths($month));
+//            if (!$student->expired()) {
+//                $days += $student->remaining();
+//            }
+//            DB::table("students")->where("id", $repurchase)->update([
+//                'end' => Carbon::parse($start)->addDays($days + 1),
+//                'start' => $start,
+//                'old' => 0,
+//            ]);
+//        }
+//
+//
+//        // do something before validation, before save, before everything
+//        $response = $this->traitStore();
+//        // do something after save
+//        return $response;
+//    }
 }

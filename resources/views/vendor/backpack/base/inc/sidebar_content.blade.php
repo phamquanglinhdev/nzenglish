@@ -67,3 +67,6 @@
     </ul>
 </li>
 
+
+<li class="nav-item"><a class="nav-link" href="{{ backpack_url('pack') }}"><i class="nav-icon la la-question"></i> Packs</a></li>
+<li class="nav-item"><a class="nav-link" href="{{ backpack_url('extend') }}"><i class="nav-icon la la-question"></i> Extends</a></li>

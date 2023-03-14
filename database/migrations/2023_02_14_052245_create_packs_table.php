@@ -10,12 +10,10 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('grades', function (Blueprint $table) {
+        Schema::create('packs', function (Blueprint $table) {
             $table->id();
             $table->string("name");
-            $table->string("status");
-            $table->integer("origin");
-            $table->softDeletesDatetime();
+            $table->string("value");
             $table->timestamps();
         });
     }
@@ -25,6 +23,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('grades');
+        Schema::dropIfExists('packs');
     }
 };

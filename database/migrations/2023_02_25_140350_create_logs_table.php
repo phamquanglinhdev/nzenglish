@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->longText("note")->nullable();
             $table->unsignedBigInteger("author_id");
             $table->foreign("author_id")->references('id')->on("users");
+            $table->integer("origin");
             $table->timestamps();
         });
     }

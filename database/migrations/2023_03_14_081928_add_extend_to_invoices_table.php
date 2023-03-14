@@ -10,13 +10,9 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('grades', function (Blueprint $table) {
-            $table->id();
-            $table->string("name");
-            $table->string("status");
-            $table->integer("origin");
-            $table->softDeletesDatetime();
-            $table->timestamps();
+        Schema::table('invoices', function (Blueprint $table) {
+            $table->date("start_extend")->nullable();
+            $table->integer("month")->nullable();
         });
     }
 
@@ -25,6 +21,9 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('grades');
+        Schema::table('invoices', function (Blueprint $table) {
+            $table->dropColumn("start_extend");
+            $table->dropColumn("month");
+        });
     }
 };
