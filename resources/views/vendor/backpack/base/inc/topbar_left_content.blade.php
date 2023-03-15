@@ -6,6 +6,7 @@
     <div class="input-group">
         <div class="input-group-prepend">
             <select class="form-control" name="or">
+                <option>-</option>
                 <option {{Cookie::get("origin")==1?"selected":""}} value="1">CN TP.Hồ Chí
                     Minh
                 </option>
@@ -20,3 +21,16 @@
     </div>
 
 </form>
+<div class="mx-5 bg-success p-2 rounded">Chi nhánh hiện tại :
+    @switch(Cookie::get("origin"))
+        @case(1)
+            <span>TP.HCM</span>
+            @break
+        @case(2)
+            <span>BÌNH DƯƠNG</span>
+            @break
+        @case(3)
+            <span>HÀ NỘI</span>
+            @break
+    @endswitch
+</div>
