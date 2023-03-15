@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->string("name");
             $table->integer("value");
+            $table->integer("origin");
             $table->timestamps();
         });
     }

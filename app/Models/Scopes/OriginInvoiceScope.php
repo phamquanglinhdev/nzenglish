@@ -17,6 +17,8 @@ class OriginInvoiceScope implements Scope
         $origin = Cookie::get("origin") ?? 1;
         $builder->whereHas("student", function (Builder $student) use ($origin) {
             $student->where("origin",$origin);
+        })->whereHas("pack",function (Builder $pack){
+            $pack->where("name","!=","Gia hạn học phí");
         });
     }
 }

@@ -44,6 +44,28 @@
         </div>
     </div>
     <div class="append">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="mb-2 h5">Thống kê tài chính</div>
+                <div class="row">
+                </div>
+            </div>
+        </div>
+        <div class="">
+            <div class="row my-3">
+                <div class="col-md-3">
+                    @include("components.invoice",["fin"=>\App\Models\Dashboard::getFinhance()])
+                </div>
+                <div class="col-md-3">
+                    @include("components.payment",["fin"=>\App\Models\Dashboard::getFinhance()])
+                </div>
+                <div class="col-md-6">
+                    @include("components.resultFinhance",["fin"=>\App\Models\Dashboard::getFinhance()])
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="append">
         <hr>
         <div class="row">
             <div class="col-md-3">
@@ -91,4 +113,5 @@
             </div>
         </div>
     </div>
+
 @endsection

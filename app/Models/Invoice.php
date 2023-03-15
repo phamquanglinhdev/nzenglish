@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Scopes\OriginInvoiceScope;
 use App\Models\Scopes\OriginScope;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -23,6 +24,19 @@ class Invoice extends Model
         parent::boot();
         static::addGlobalScope(new OriginInvoiceScope);
     }
+
+    protected static function fakeBoot()
+    {
+        parent::boot();
+    }
+
+    protected function scopeMonth($query)
+    {
+        $start = Carbon::now()->startOfMonth();
+        $end = Carbon::now()->endOfMonth();
+        $query->where("updated_at", ">=", $start)->where("updated_at", "<=", $end);
+    }
+
     protected $table = 'invoices';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
@@ -46,10 +60,12 @@ class Invoice extends Model
     {
         return $this->belongsTo(Common::class, "student_id", "id");
     }
+
     public function Staff()
     {
         return $this->belongsTo(Staff::class, "staff_id", "id");
     }
+
     public function Pack()
     {
         return $this->belongsTo(Pack::class, "pack_id", "id");

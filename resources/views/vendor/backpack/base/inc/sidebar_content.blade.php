@@ -22,6 +22,7 @@
                     class="nav-icon la la-file-invoice-dollar"></i>
                 Hóa đơn khác</a></li>
         </li>
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('payment') }}"><i class="nav-icon la la-file-invoice-dollar"></i> Hóa đơn chi</a></li>
     </ul>
 </li>
 <li class="nav-item nav-dropdown">
@@ -68,5 +69,3 @@
                     class='nav-icon las la-cog'></i> Cài đặt</a></li>
     </ul>
 </li>
-
-

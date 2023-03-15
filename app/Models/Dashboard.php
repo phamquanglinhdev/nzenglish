@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\MonthScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -38,5 +39,26 @@ class Dashboard extends Model
     public static function frequency()
     {
         return "65%";
+    }
+
+    public static function getFinhance(): array
+    {
+        $invoices = Invoice::month();
+        $extend = Extend::month();
+        $payment = Payment::month();
+        $packs = Pack::month();
+        return [
+            'invoice' => [
+                'total' => $invoices->sum("value"),
+                'count' => $invoices->count(),
+            ],
+            'extend' => [
+                'total' => $extend->sum("value"),
+                'count' => $extend->count()
+            ],
+            'payment' => $payment,
+            'pack' => $packs->get()
+        ];
+
     }
 }
