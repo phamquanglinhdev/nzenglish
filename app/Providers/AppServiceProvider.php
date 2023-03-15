@@ -27,5 +27,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Schema::defaultStringLength(191);
+        if (!Cookie::get("origin")) {
+            Cookie::queue("origin", 1);
+        }
     }
 }
