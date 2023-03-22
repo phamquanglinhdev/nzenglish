@@ -64,7 +64,9 @@ class CheckIfAdmin
         if (!$this->checkIfUserIsAdmin(backpack_user())) {
             return $this->respondToUnauthorizedRequest($request);
         }
-        Cookie::queue("origin", backpack_user()->origin);
+        if(backpack_user()->role!="admin"){
+            Cookie::queue("origin", backpack_user()->origin);
+        }
         return $next($request);
     }
 }
