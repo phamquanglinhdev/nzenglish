@@ -11,18 +11,26 @@
                 Học sinh đang học</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('old') }}"><i
                     class="nav-icon la la-user-clock"></i> Học sinh cũ</a></li>
+        @if(backpack_user()->role!="viewer")
+            <li class="nav-item"><a class="nav-link" href="{{ backpack_url('bonus') }}"><i
+                        class="nav-icon la la-calendar"></i> Bù
+                    ngày</a></li>
+        @endif
     </ul>
 </li>
 <li class="nav-item nav-dropdown">
     <a class="nav-link nav-dropdown-toggle" href="#"><i class="nav-icon la la-piggy-bank"></i>Quản lý tài chính</a>
     <ul class="nav-dropdown-items">
-        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('pack') }}"><i class="nav-icon las la-coins"></i> Gói mặc định</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('extend') }}"><i class="nav-icon la la-file-invoice-dollar"></i> Hóa đơn gia hạn</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('pack') }}"><i class="nav-icon las la-coins"></i>
+                Gói mặc định</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('extend') }}"><i
+                    class="nav-icon la la-file-invoice-dollar"></i> Hóa đơn gia hạn</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('invoice') }}"><i
                     class="nav-icon la la-file-invoice-dollar"></i>
                 Hóa đơn khác</a></li>
         </li>
-        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('payment') }}"><i class="nav-icon la la-file-invoice-dollar"></i> Hóa đơn chi</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('payment') }}"><i
+                    class="nav-icon la la-file-invoice-dollar"></i> Hóa đơn chi</a></li>
     </ul>
 </li>
 <li class="nav-item nav-dropdown">
@@ -69,3 +77,4 @@
                     class='nav-icon las la-cog'></i> Cài đặt</a></li>
     </ul>
 </li>
+

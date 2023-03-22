@@ -11,6 +11,7 @@ use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Carbon\Carbon;
 use http\Client\Request;
+use Illuminate\Http\JsonResponse;
 
 /**
  * Class StudentCrudController
@@ -94,7 +95,7 @@ class StudentCrudController extends CommonCrudController
         return redirect()->back();
     }
 
-    public function extend(\Illuminate\Http\Request $request)
+    public function extend(\Illuminate\Http\Request $request): JsonResponse
     {
         $services = new ExtendStudentServices($request->id ?? null);
         if ($services->update()) {

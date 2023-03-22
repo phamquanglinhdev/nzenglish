@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Cookie;
+
 
 class CheckIfAdmin
 {
@@ -22,7 +24,7 @@ class CheckIfAdmin
      * does not have a '/home' route, use something you've built for your users
      * (again - users, not admins).
      *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable|null  $user
+     * @param \Illuminate\Contracts\Auth\Authenticatable|null $user
      * @return bool
      */
     private function checkIfUserIsAdmin($user)
@@ -34,7 +36,7 @@ class CheckIfAdmin
     /**
      * Answer to unauthorized access request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     private function respondToUnauthorizedRequest($request)
@@ -49,8 +51,8 @@ class CheckIfAdmin
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure $next
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -59,10 +61,10 @@ class CheckIfAdmin
             return $this->respondToUnauthorizedRequest($request);
         }
 
-        if (! $this->checkIfUserIsAdmin(backpack_user())) {
+        if (!$this->checkIfUserIsAdmin(backpack_user())) {
             return $this->respondToUnauthorizedRequest($request);
         }
-
+        Cookie::queue("origin", backpack_user()->origin);
         return $next($request);
     }
 }
