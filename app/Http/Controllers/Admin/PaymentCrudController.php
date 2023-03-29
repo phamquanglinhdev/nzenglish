@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\PaymentRequest;
+use App\Utils\FilterRole;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use http\Cookie;
@@ -30,6 +31,7 @@ class PaymentCrudController extends CrudController
         CRUD::setModel(\App\Models\Payment::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/payment');
         CRUD::setEntityNameStrings('Hóa đơn chi', 'Hóa đơn chi');
+        FilterRole::filterByRole($this->crud, 'payment');
     }
 
     /**

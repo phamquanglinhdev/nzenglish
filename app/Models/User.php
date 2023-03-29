@@ -10,6 +10,9 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @property mixed $permissions
+ */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -25,7 +28,8 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'origin'
+        'origin',
+        'permissions'
     ];
 
     /**
@@ -45,11 +49,23 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'permissions' => 'array'
     ];
 
     public function setPasswordAttribute($value)
     {
         if ($value != null && $value != "")
             $this->attributes['password'] = Hash::make($value);
+    }
+
+    public function hasRole(string $role): bool
+    {
+        if ($this->role = "super") {
+            return true;
+        }
+        if ($this->permissions != null) {
+            return in_array($role, $this->permissions);
+        }
+        return false;
     }
 }

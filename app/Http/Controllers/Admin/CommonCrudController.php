@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\StudentRequest;
 use App\Models\Student;
+use App\Utils\FilterRole;
 use Backpack\CRUD\app\Exceptions\BackpackProRequiredException;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -37,6 +38,7 @@ class CommonCrudController extends CrudController
         $this->crud->setOperationSetting('detailsRow', true);
         $this->crud->denyAccess(["show", "delete"]);
         $this->crud->addButton("line", "old", "view", "buttons.old", "line");
+        FilterRole::filterByRole($this->crud, 'bonus');
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\DocumentRequest;
+use App\Utils\FilterRole;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -29,6 +30,7 @@ class DocumentCrudController extends CrudController
         CRUD::setModel(\App\Models\Document::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/document');
         CRUD::setEntityNameStrings('Tài liệu', 'Tài liệu');
+        FilterRole::filterByRole($this->crud, 'document');
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\WorkRequest;
+use App\Utils\FilterRole;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -29,6 +30,7 @@ class WorkCrudController extends CrudController
         CRUD::setModel(\App\Models\Work::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/work');
         CRUD::setEntityNameStrings('Nhật ký làm việc', 'Nhật ký làm việc');
+        FilterRole::filterByRole($this->crud, 'work');
     }
 
     /**

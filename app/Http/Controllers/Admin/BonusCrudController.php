@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\BonusRequest;
 use App\Models\Bonus;
 use App\Models\Student;
+use App\Utils\FilterRole;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Carbon\Carbon;
@@ -43,6 +44,7 @@ class BonusCrudController extends CrudController
         if (backpack_user()->role == "viewer") {
             $this->crud->denyAccess(["create","edit"]);
         }
+        FilterRole::filterByRole($this->crud, 'bonus');
     }
 
     /**

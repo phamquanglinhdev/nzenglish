@@ -8,6 +8,7 @@ use App\Http\Requests\InvoiceRequest;
 use App\Models\Common;
 use App\Models\Pack;
 use App\Models\Student;
+use App\Utils\FilterRole;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Carbon\Carbon;
@@ -40,6 +41,7 @@ class InvoiceCrudController extends CrudController
         CRUD::setRoute(config('backpack.base.route_prefix') . '/invoice');
         CRUD::setEntityNameStrings('Hóa đơn', 'Hóa đơn');
         $this->crud->denyAccess(["update", "delete"]);
+        FilterRole::filterByRole($this->crud, 'invoice');
     }
 
     /**

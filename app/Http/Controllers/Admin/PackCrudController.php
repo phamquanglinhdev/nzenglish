@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\PackRequest;
+use App\Utils\FilterRole;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -29,6 +30,7 @@ class PackCrudController extends CrudController
         CRUD::setModel(\App\Models\Pack::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/pack');
         CRUD::setEntityNameStrings('Gói mặc định', 'Các gói mặc định');
+        FilterRole::filterByRole($this->crud, 'pack');
     }
 
     /**

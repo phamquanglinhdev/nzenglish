@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\UserRequest;
+use App\Utils\FilterRole;
+use App\Utils\Roles;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use function Symfony\Component\Translation\t;
 
 /**
  * Class UserCrudController
@@ -29,6 +32,7 @@ class UserCrudController extends CrudController
         CRUD::setModel(\App\Models\User::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/user');
         CRUD::setEntityNameStrings('Người dùng', 'Nguời dùng');
+        FilterRole::filterByRole($this->crud, 'user');
     }
 
     /**
@@ -88,6 +92,12 @@ class UserCrudController extends CrudController
             'admin' => 'Quản trị viên',
             'staff' => 'Biên tập viên (Chỉnh sửa)',
             'viewer' => 'Theo dõi viên (Không có quyền chỉnh sửa)',
+        ]);
+        CRUD::addField([
+            'name' => 'permissions',
+            'type' => 'checklist_from_array',
+            'options' => Roles::getAllRoles(),
+            'allows_multiple'=>true
         ]);
 
 

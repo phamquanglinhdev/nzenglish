@@ -6,6 +6,7 @@ use App\Http\Requests\OldRequest;
 use App\Models\Old;
 use App\Models\Scopes\StudentScope;
 use App\Models\Student;
+use App\Utils\FilterRole;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -36,7 +37,7 @@ class OldCrudController extends CommonCrudController
         $this->crud->denyAccess(["create", "update"]);
         $this->crud->removeAllButtons();
         $this->crud->addButton("line", "repurchase", "view", "buttons.repurchase");
-
+        FilterRole::filterByRole($this->crud, 'old');
     }
 
     /**

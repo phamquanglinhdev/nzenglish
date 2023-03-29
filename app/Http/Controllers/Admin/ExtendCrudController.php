@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Admin\Operations\ExtendOperation;
 use App\Http\Requests\ExtendRequest;
+use App\Utils\FilterRole;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -20,6 +21,7 @@ class ExtendCrudController extends InvoiceCrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
     use ExtendOperation;
+
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
      *
@@ -31,6 +33,7 @@ class ExtendCrudController extends InvoiceCrudController
         CRUD::setRoute(config('backpack.base.route_prefix') . '/extend');
         CRUD::setEntityNameStrings('Hóa đơn gia hạn', 'Hóa đơn gia hạn');
         $this->crud->denyAccess(["create", "update"]);
+        FilterRole::filterByRole($this->crud, 'extend');
     }
 
     /**

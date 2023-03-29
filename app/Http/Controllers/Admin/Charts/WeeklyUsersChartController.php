@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin\Charts;
 
-use Backpack\CRUD\app\Http\Controllers\ChartController;
 use ConsoleTVs\Charts\Classes\Chartjs\Chart;
 
 /**
@@ -10,7 +9,7 @@ use ConsoleTVs\Charts\Classes\Chartjs\Chart;
  * @package App\Http\Controllers\Admin\Charts
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class WeeklyUsersChartController extends ChartController
+class WeeklyUsersChartController
 {
     public function setup()
     {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\BasketRequest;
+use App\Utils\FilterRole;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Http\Controllers\Operations\ReorderOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -33,6 +34,7 @@ class BasketCrudController extends CrudController
         CRUD::setEntityNameStrings('Danh mục giáo trình', 'Danh mục giáo trình');
         $this->crud->set('reorder.label', 'name'); // which model attribute to use for labels
         $this->crud->set('reorder.max_level', 3);
+        FilterRole::filterByRole($this->crud, 'basket');
     }
 
 

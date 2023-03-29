@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\LogRequest;
 use App\Models\Grade;
 use App\Models\Student;
+use App\Utils\FilterRole;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Backpack\CRUD\app\Library\Widget;
@@ -35,6 +36,7 @@ class LogCrudController extends CrudController
         CRUD::setModel(\App\Models\Log::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/logs');
         CRUD::setEntityNameStrings('Nhật ký lớp học', 'Nhật ký lớp học');
+        FilterRole::filterByRole($this->crud, 'logs');
         $this->crud->addFilter([
             'name' => 'grade',
             'label' => 'Lớp',
