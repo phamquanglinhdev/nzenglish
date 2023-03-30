@@ -55,7 +55,7 @@ class Roles
                 $result[$entry_key . "." . $method_key] = $method . " " . $entry;
             }
         }
-        $result['finance'] = "Quản lý tài chính";
+        $result['finance'] = "Báo cáo tài chính";
         return $result;
     }
 }
