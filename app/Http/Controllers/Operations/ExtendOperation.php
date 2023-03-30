@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Operations;
+namespace App\Http\Controllers\Operations;
 
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Illuminate\Support\Facades\Route;

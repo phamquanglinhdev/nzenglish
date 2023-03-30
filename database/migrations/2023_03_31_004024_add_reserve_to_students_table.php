@@ -10,12 +10,9 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('documents', function (Blueprint $table) {
-            $table->id();
-            $table->string("name");
-            $table->string("link");
-            $table->softDeletesDatetime();
-            $table->timestamps();
+        Schema::table('students', function (Blueprint $table) {
+            $table->date("reserve_at")->nullable();
+            $table->integer("reserve_day")->nullable();
         });
     }
 
@@ -24,6 +21,9 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('documents');
+        Schema::table('students', function (Blueprint $table) {
+            $table->dropColumn('reserve_at');
+            $table->dropColumn("reserve_day");
+        });
     }
 };

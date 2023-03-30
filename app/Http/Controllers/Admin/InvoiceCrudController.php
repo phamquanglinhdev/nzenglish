@@ -3,18 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Admin\Operations\AcceptOperation;
-use App\Http\Controllers\Admin\Operations\ConfirmOperation;
+use App\Http\Controllers\Operations\ConfirmOperation;
 use App\Http\Requests\InvoiceRequest;
 use App\Models\Common;
+use App\Models\Invoice;
 use App\Models\Pack;
-use App\Models\Student;
+use App\Utils\AutoString;
 use App\Utils\FilterRole;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 /**
  * Class InvoiceCrudController
@@ -242,7 +241,8 @@ class InvoiceCrudController extends CrudController
         ]);
         CRUD::addField([
             'name' => 'code',
-            'label' => 'Mã hóa đơn'
+            'label' => 'Mã hóa đơn',
+            'value' => AutoString::invoiceCode(),
         ]);
 
         CRUD::addField([

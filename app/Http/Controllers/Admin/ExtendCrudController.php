@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\Operations\ExtendOperation;
+use App\Http\Controllers\Operations\ExtendOperation;
 use App\Http\Requests\ExtendRequest;
 use App\Utils\FilterRole;
-use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**

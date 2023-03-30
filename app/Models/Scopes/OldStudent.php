@@ -14,6 +14,6 @@ class OldStudent implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        $builder->where("old", 1);
+        $builder->where("old", 1)->where("reserve_at",null);
     }
 }

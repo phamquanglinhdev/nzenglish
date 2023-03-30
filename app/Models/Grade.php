@@ -16,6 +16,7 @@ class Grade extends Model
     use SoftDeletes;
 
     protected array $date = ["deleted_at"];
+
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES
@@ -26,6 +27,7 @@ class Grade extends Model
         parent::boot();
         static::addGlobalScope(new OriginScope);
     }
+
     protected $table = 'grades';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
@@ -33,6 +35,9 @@ class Grade extends Model
     // protected $fillable = [];
     // protected $hidden = [];
     // protected $dates = [];
+    protected $casts = [
+        'times' => 'array'
+    ];
 
     /*
     |--------------------------------------------------------------------------
@@ -49,13 +54,20 @@ class Grade extends Model
     {
         return $this->hasMany(Log::class, "grade_id", "id");
     }
+
     /*
     |--------------------------------------------------------------------------
     | SCOPES
     |--------------------------------------------------------------------------
     */
-    public function Students(){
-        return $this->belongsToMany(Student::class,"student_grade","grade_id","student_id");
+    public function Students()
+    {
+        return $this->belongsToMany(Student::class, "student_grade", "grade_id", "student_id");
+    }
+
+    public function members()
+    {
+        return $this->Students()->count() . " HS";
     }
     /*
     |--------------------------------------------------------------------------

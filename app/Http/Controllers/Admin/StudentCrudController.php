@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Operations\FetchOperation;
 use App\Http\Requests\StudentRequest;
 use App\Models\Extend;
+use App\Models\Invoice;
+use App\Models\Reserve;
 use App\Models\Student;
 use App\Services\ExtendStudentServices;
 use App\Utils\FilterRole;
@@ -13,6 +16,7 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Carbon\Carbon;
 use http\Client\Request;
 use Illuminate\Http\JsonResponse;
+use Prologue\Alerts\Facades\Alert;
 
 /**
  * Class StudentCrudController
@@ -22,17 +26,25 @@ use Illuminate\Http\JsonResponse;
 class StudentCrudController extends CommonCrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation {
+        store as traitStore;
+    }
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    use FetchOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
      *
-     * @return void
+     * @return \App\Http\Controllers\Operations\Illuminate\Database\Eloquent\Collection|\App\Http\Controllers\Operations\Illuminate\Pagination\LengthAwarePaginator|JsonResponse
      * @throws BackpackProRequiredException
      */
+    public function fetchGrades()
+    {
+        return $this->fetch(\App\Models\Grade::class);
+    }
+
     public function setup()
     {
         CRUD::setModel(\App\Models\Student::class);
@@ -104,5 +116,39 @@ class StudentCrudController extends CommonCrudController
             return response()->json(null, 200);
         }
         return response()->json(null, 500);
+    }
+
+    public function store()
+    {
+
+        $request = $this->crud->validateRequest();
+        $data = $this->crud->getStrippedSaveRequest($request);
+        $invoice = json_decode($this->crud->getRequest()->get("invoice"))[0];
+        $data["grade"] = "Test";
+        $data['start'] = Carbon::parse(now());
+        $data['end'] = Carbon::parse(now());
+        $student = Student::create($data);
+        $invoice->pack_id = 1;
+        $invoice->staff_id = backpack_user()->id;
+        $invoice->student_id = $student->id;
+        Invoice::create((array)($invoice));
+        Alert::success(trans('backpack::crud.insert_success'))->flash();
+        return redirect("admin/student");
+    }
+
+    public function deactive($id = null)
+    {
+        if ($id != null) {
+            $student = Student::find($id);
+            if (isset($student->id)) {
+                $student->reserve_day = Carbon::parse(now())->diffInDays(Carbon::parse($student->end));
+                $student->reserve_at = Carbon::parse(now())->toDateString();
+                $student->save();
+                Alert::success("Cập nhật thành công");
+                return redirect("/admin/reserve");
+            }
+        }
+        Alert::error("Cập nhật thất bại");
+        return redirect()->back();
     }
 }

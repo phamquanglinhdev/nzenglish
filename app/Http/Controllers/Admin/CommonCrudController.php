@@ -3,12 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\StudentRequest;
+use App\Models\Branch;
+use App\Models\Invoice;
 use App\Models\Student;
 use App\Utils\FilterRole;
 use Backpack\CRUD\app\Exceptions\BackpackProRequiredException;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 /**
  * Class StudentCrudController
@@ -67,7 +71,9 @@ class CommonCrudController extends CrudController
         ],
             false,
             function ($value) { // if the filter is active
-                $this->crud->addClause('where', 'grade', 'LIKE', "%$value%");
+                $this->crud->query->whereHas("grades", function (Builder $builder) use ($value) {
+                    $builder->where("name", "like", "%$value%");
+                });
             });
         $this->crud->addFilter([
             'name' => 'end',
@@ -112,7 +118,7 @@ class CommonCrudController extends CrudController
         CRUD::column('phone')->label("Số điện thoại");
         CRUD::column('start')->label("Ngày bắt đầu gói")->type("date");
         CRUD::column('end')->type("date")->label("Ngày kết thúc gói");
-        CRUD::column('grade')->label("Lớp");
+        CRUD::column('grades')->label("Lớp");
 //
 //        CRUD::column('birthday');
 //        CRUD::column('note');
@@ -139,11 +145,7 @@ class CommonCrudController extends CrudController
         CRUD::field('origin')
             ->label("Chi nhánh")
             ->type("select_from_array")
-            ->options([
-                1 => 'Chi nhánh TPHCM',
-                2 => 'Chi nhánh Bình Dương',
-                3 => 'Chi nhanh Hà Nội',
-            ]);
+            ->options(Branch::options());
         CRUD::field('name')->label("Tên học sinh");
         CRUD::field('birthday')->label("Ngày tháng năm sinh")->wrapper([
             'class' => 'col-md-6 mb-2'
@@ -153,18 +155,115 @@ class CommonCrudController extends CrudController
         ]);
         CRUD::field('avatar')->type("image")->crop(true)->aspect_ratio(1);
         CRUD::field('phone')->label("Số điện thoại")->type("phone");
-        CRUD::field('grade')->label("Tên lớp");
-//        CRUD::field('days')->type("hidden");
-        CRUD::field('start')->label("Ngày bắt đầu gói")->type("date")->wrapper([
-            'class' => 'col-md-6 mb-2'
+        CRUD::addField([
+            'name' => 'grades',
+            'label' => 'Lớp',
+            'type' => 'relationship',
+            'model' => 'App\Models\Grade',
+            'entity' => 'Grades',
+            'attribute' => 'name',
+            'inline_create' => [
+                'entity' => 'grade',
+                'add_button_label' => 'Thêm kỹ lớp',
+            ]
         ]);
-        CRUD::field('cycle')->label("Chu kỳ")->type("number")->options([
-        ])->default(3)->wrapper([
-            'class' => 'col-md-6 mb-2'
-        ]);
-
-
         CRUD::field('note')->label("Ghi chú");
+        if ($this->crud->getOperation() != "update") {
+            CRUD::addField([
+                'name' => 'invoice',
+                'label' => 'Thu học phí',
+                'type' => 'repeatable',
+                'init_row' => 1,
+                'max_rows' => 1,
+                'min_rows' => 1,
+                'fields' => [
+                    [
+                        'name' => 'start_extend',
+                        'label' => 'Ngày bắt đầu gói',
+                        'type' => 'date',
+                        'wrapper' => [
+                            'class' => 'col-md-6 mb-3'
+                        ],
+                        'attributes' => [
+                            'required' => true
+                        ]
+
+                    ],
+                    [
+                        'name' => 'month',
+                        'label' => 'Chu kỳ',
+                        'type' => 'number',
+                        'suffix' => 'tháng',
+                        'wrapper' => [
+                            'class' => 'col-md-6 mb-3'
+                        ],
+                        'attributes' => [
+                            'required' => true
+                        ]
+                    ],
+                    [
+                        'name' => 'name',
+                        'label' => 'Tên hóa đơn',
+                        'wrapper' => [
+                            'class' => 'col-md-6 mb-3'
+                        ],
+                        'value' => 'Hóa đơn mới',
+                        'attributes' => [
+                            'required' => true
+                        ]
+                    ],
+                    [
+                        'name' => 'code',
+                        'label' => 'Mã hóa đơn',
+                        'wrapper' => [
+                            'class' => 'col-md-6 mb-3'
+                        ],
+                        'default' => str_replace(".", "", (Invoice::max("id") + 1) / 10000),
+                        'attributes' => [
+                            'required' => true
+                        ]
+                    ],
+                    [
+                        'name' => 'value',
+                        'label' => 'Số tiền',
+                        'wrapper' => [
+                            'class' => 'col-md-6 mb-3'
+                        ],
+                        'suffix' => "đ",
+                        'value' => '0',
+                        'attributes' => [
+                            'required' => true
+                        ]
+                    ],
+                    [
+                        'name' => 'method',
+                        'label' => 'Hình thức',
+                        'wrapper' => [
+                            'class' => 'col-md-6 mb-3'
+                        ],
+                        'type' => 'select_from_array',
+                        'options' => [
+                            'cash' => 'Tiền mặt',
+                            'bank' => 'Chuyển khoản',
+                        ],
+                        'attributes' => [
+                            'required' => true
+                        ]
+                    ],
+                    [
+                        'name' => 'image',
+                        'label' => 'Hình ảnh',
+                        'type' => 'image'
+                    ],
+                    [
+                        'name' => 'note',
+                        'label' => 'Ghi chú',
+                        'type' => 'textarea'
+                    ],
+                ]
+            ]);
+        }
+
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:
@@ -181,6 +280,7 @@ class CommonCrudController extends CrudController
      */
     protected function setupUpdateOperation()
     {
+
         $this->setupCreateOperation();
     }
 }

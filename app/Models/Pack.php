@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cookie;
 
@@ -14,6 +15,9 @@ class Pack extends Model
 {
     use CrudTrait;
     use HasFactory;
+    use SoftDeletes;
+
+    protected array $date = ["deleted_at"];
 
     /*
     |--------------------------------------------------------------------------

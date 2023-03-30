@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\BonusRequest;
 use App\Models\Bonus;
+use App\Models\Grade;
 use App\Models\Student;
 use App\Utils\FilterRole;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cookie;
 
 /**
@@ -42,7 +44,7 @@ class BonusCrudController extends CrudController
         CRUD::setRoute(config('backpack.base.route_prefix') . '/bonus');
         CRUD::setEntityNameStrings('Bù Ngày', 'Bù ngày');
         if (backpack_user()->role == "viewer") {
-            $this->crud->denyAccess(["create","edit"]);
+            $this->crud->denyAccess(["create", "edit"]);
         }
         FilterRole::filterByRole($this->crud, 'bonus');
     }
@@ -84,8 +86,16 @@ class BonusCrudController extends CrudController
         CRUD::field('all')->type("checkbox")->label("Thêm cho toàn bộ học sinh");
         CRUD::addField([
             'name' => 'students',
+            'label' => 'Học sinh cụ thể',
             'type' => 'select2_from_array',
             'options' => Student::get()->pluck('name', 'id')->toArray(),
+            'allows_multiple' => true,
+        ]);
+        CRUD::addField([
+            'name' => 'grades',
+            'type' => 'select2_from_array',
+            'label' => 'Học sinh thuộc lớp cụ thể',
+            'options' => Grade::get()->pluck('name', 'id')->toArray(),
             'allows_multiple' => true,
         ]);
         CRUD::field("origin")->type("hidden")->value(Cookie::get("origin") ?? 1);
@@ -129,6 +139,17 @@ class BonusCrudController extends CrudController
                     $student->save();
                 }
             }
+            if (!empty($request->grades)) {
+                $students = Student::whereHas("grades", function (Builder $builder) use ($request) {
+                    $builder->whereIn("id", $request->grade);
+                })->get();
+                foreach ($students as $student) {
+                    $end = $student->end;
+                    $rs = Carbon::parse($end)->addDays($request->days ?? 0);
+                    $student->end = $rs;
+                    $student->save();
+                }
+            }
         }
         return $this->traitStore();
     }
@@ -151,6 +172,15 @@ class BonusCrudController extends CrudController
                 $oldStudent->save();
             }
         }
+        if (!empty($request->grades)) {
+            $oldStudents = Student::whereHas("grades", function (Builder $builder) use ($request) {
+                $builder->whereIn("id", $request->grade);
+            })->get();
+            foreach ($oldStudents as $student) {
+                $oldStudent->end = Carbon::parse($student->end)->subDays($old->days ?? 0);
+                $oldStudent->save();
+            }
+        }
         $request = (object)$this->crud->getRequest()->toArray();
         if ($request->all) {
             $students = Student::all();
@@ -161,6 +191,15 @@ class BonusCrudController extends CrudController
         }
         if (!empty($request->students)) {
             $students = Student::whereIn("id", $request->students)->get();
+            foreach ($students as $student) {
+                $student->end = Carbon::parse($student->end)->addDays($request->days ?? 0);
+                $student->save();
+            }
+        }
+        if (!empty($request->grades)) {
+            $students = Student::whereHas("grades", function (Builder $builder) use ($request) {
+                $builder->whereIn("id", $request->grade);
+            })->get();
             foreach ($students as $student) {
                 $student->end = Carbon::parse($student->end)->addDays($request->days ?? 0);
                 $student->save();
@@ -183,6 +222,15 @@ class BonusCrudController extends CrudController
             $oldStudents = Student::whereIn("id", $old->students)->get();
             foreach ($oldStudents as $oldStudent) {
                 $oldStudent->end = Carbon::parse($oldStudent->end)->subDays($old->days ?? 0);
+                $oldStudent->save();
+            }
+        }
+        if (!empty($request->grades)) {
+            $students = Student::whereHas("grades", function (Builder $builder) use ($request) {
+                $builder->whereIn("id", $request->grade);
+            })->get();
+            foreach ($students as $student) {
+                $oldStudent->end = Carbon::parse($student->end)->subDays($old->days ?? 0);
                 $oldStudent->save();
             }
         }

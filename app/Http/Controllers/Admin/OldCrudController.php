@@ -35,6 +35,7 @@ class OldCrudController extends CommonCrudController
         CRUD::setRoute(config('backpack.base.route_prefix') . '/old');
         CRUD::setEntityNameStrings('Học sinh cũ', 'Học sinh cũ');
         $this->crud->denyAccess(["create", "update"]);
+        $this->crud->allowAccess(["delete"]);
         $this->crud->removeAllButtons();
         $this->crud->addButton("line", "repurchase", "view", "buttons.repurchase");
         FilterRole::filterByRole($this->crud, 'old');

@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->string("role")->default("viewer");
             $table->integer("origin")->nullable();
             $table->rememberToken();
+            $table->softDeletesDatetime();
             $table->timestamps();
         });
     }

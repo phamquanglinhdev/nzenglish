@@ -18,11 +18,12 @@ return new class extends Migration {
             $table->date("first");
             $table->date("start");
             $table->date("end")->nullable();
-            $table->string("grade");
+            $table->integer("first_reg")->default(1);
             $table->date("birthday");
             $table->longText("note")->nullable();
             $table->longText("avatar");
             $table->integer("old")->default(0);
+            $table->softDeletesDatetime();
             $table->timestamps();
         });
     }

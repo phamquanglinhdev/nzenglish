@@ -2,20 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\UserRequest;
-use App\Models\Branch;
+use App\Http\Requests\BranchRequest;
 use App\Utils\FilterRole;
-use App\Utils\Roles;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use function Symfony\Component\Translation\t;
 
 /**
- * Class UserCrudController
+ * Class BranchCrudController
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class UserCrudController extends CrudController
+class BranchCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
@@ -30,10 +27,10 @@ class UserCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\User::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/user');
-        CRUD::setEntityNameStrings('Người dùng', 'Nguời dùng');
-        FilterRole::filterByRole($this->crud, 'user');
+        CRUD::setModel(\App\Models\Branch::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/branch');
+        CRUD::setEntityNameStrings('Chi nhánh', 'Danh sách chi nhánh');
+//        FilterRole::filterByRole($this->crud, 'branch');
     }
 
     /**
@@ -44,19 +41,8 @@ class UserCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-
-        CRUD::column('name')->label("Tên");
-        CRUD::column('email');
-        CRUD::column('role')->label("Phân quyền")->type("select_from_array")->options([
-            'admin' => 'Quản trị viên',
-            'staff' => 'Biên tập viên',
-            'viewer' => 'Theo dõi viên',
-        ]);
-        CRUD::column('origin')
-            ->label("Chi nhánh")
-            ->type("select_editable")
-            ->options(Branch::options());
-
+        CRUD::column('code')->label("Mã chi nhánh");
+        CRUD::column('name')->label("Tên chi nhánh");
 
         /**
          * Columns can be defined using the fluent syntax or array syntax:
@@ -73,26 +59,13 @@ class UserCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation(UserRequest::class);
-        CRUD::field('origin')
-            ->label("Chi nhánh")
-            ->type("select_from_array")
-            ->options(Branch::options());
-        CRUD::field('name')->label("Họ và tên");
-        CRUD::field('email')->label("Địa chỉ email");
-        CRUD::field('password')->type("password")->label("Mật khẩu");
-        CRUD::field('role')->label("Phân quyền")->type("select2_from_array")->default("viewer")->options([
-            'admin' => 'Quản trị viên',
-            'staff' => 'Biên tập viên (Chỉnh sửa)',
-            'viewer' => 'Theo dõi viên (Không có quyền chỉnh sửa)',
-        ]);
-        CRUD::addField([
-            'name' => 'permissions',
-            'type' => 'checklist_from_array',
-            'options' => Roles::getAllRoles(),
-            'allows_multiple' => true
-        ]);
-
+        CRUD::setValidation(BranchRequest::class);
+        CRUD::field('code')->label("Mã chi nhánh")->wrapper([
+            'class'=>'col-md-3 mb-3'
+        ])->hint("Chỉ nhập số ")->type("number");
+        CRUD::field('name')->label("Tên chi nhánh")->wrapper([
+            'class'=>'col-md-9 mb-3'
+        ]);;
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:

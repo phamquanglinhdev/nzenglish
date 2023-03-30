@@ -30,9 +30,11 @@ class ExtendStudentServices
             $end = Carbon::parse($start)->addMonths($month);
             $student->start = $start;
             $student->end = $end;
+            $student->first_reg = 0;
             $student->save();
             $extend->confirm = 1;
             $extend->save();
+
             return true;
         }
         return false;

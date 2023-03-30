@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\ReserveCrudController;
 use App\Http\Controllers\Admin\StudentCrudController;
+use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\OriginController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +22,7 @@ Route::group([
 ], function () { // custom admin routes
     Route::crud('student', 'StudentCrudController');
     Route::get('student/{id}/old', [StudentCrudController::class, "old", "id"])->name("student.old");
+    Route::get('student/{id?}/deactive', [StudentCrudController::class, "deactive", "id"])->name("student.deactive");
     Route::get('origin', [OriginController::class, "select"])->name("origin");
     Route::crud('invoice', 'InvoiceCrudController');
     Route::crud('old', 'OldCrudController');
@@ -36,4 +39,8 @@ Route::group([
     Route::crud('extend', 'ExtendCrudController');
     Route::crud('payment', 'PaymentCrudController');
     Route::crud('bonus', 'BonusCrudController');
+    Route::crud('branch', 'BranchCrudController');
+    Route::get("/finance", [FinanceController::class, "index"])->name("finance.index");
+    Route::crud('reserve', 'ReserveCrudController');
+    Route::post("/reactive", [ReserveCrudController::class, "reactive"])->name("reserve.reactive");
 }); // this should be the absolute last line of this file

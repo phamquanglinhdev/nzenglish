@@ -5,22 +5,19 @@ namespace App\Models;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Basket extends Model
+class Branch extends Model
 {
     use CrudTrait;
     use HasFactory;
-    use SoftDeletes;
 
-    protected array $date = ["deleted_at"];
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'baskets';
+    protected $table = 'branches';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
@@ -33,21 +30,21 @@ class Basket extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
-
+    public static function options()
+    {
+        $data = [];
+        $branches = self::all();
+        foreach ($branches as $branch) {
+            $data[$branch->code] = $branch->name;
+        }
+        return $data;
+    }
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function Parent()
-    {
-        return $this->belongsTo(Basket::class, "parent_id", "id");
-    }
 
-    public function Children()
-    {
-        return $this->hasMany(Basket::class, "parent_id", "id");
-    }
     /*
     |--------------------------------------------------------------------------
     | SCOPES

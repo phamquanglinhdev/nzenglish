@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Operations\FetchOperation;
+use App\Http\Controllers\Operations\InlineCreateOperation;
 use App\Http\Requests\GradeRequest;
+use App\Models\Grade;
 use App\Utils\FilterRole;
+use App\Utils\WeekDays;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Carbon\Carbon;
 
 /**
  * Class GradeCrudController
@@ -19,6 +24,7 @@ class GradeCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    use InlineCreateOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -31,7 +37,18 @@ class GradeCrudController extends CrudController
         CRUD::setRoute(config('backpack.base.route_prefix') . '/grade');
         CRUD::setEntityNameStrings('Lớp học', 'Lớp học');
         FilterRole::filterByRole($this->crud, 'grade');
+        $this->crud->setOperationSetting('detailsRow', true);
 
+    }
+
+    /**
+     * Define what happens when the List operation is loaded.
+     *
+     * @see  https://backpackforlaravel.com/docs/crud-operation-list-entries
+     * @return void
+     */
+    protected function setupListOperation()
+    {
         $this->crud->addFilter(
             [
                 'name' => 'name',
@@ -50,18 +67,10 @@ class GradeCrudController extends CrudController
             function ($value) {
                 $this->crud->query->where("status", "like", "%$value%");
             });
-    }
-
-    /**
-     * Define what happens when the List operation is loaded.
-     *
-     * @see  https://backpackforlaravel.com/docs/crud-operation-list-entries
-     * @return void
-     */
-    protected function setupListOperation()
-    {
-
         CRUD::column('name')->label("Tên lớp");
+        CRUD::column('level')->label("Cấp độ");
+        CRUD::column('members_col')->label("Sĩ số")->type("model_function")->function_name("members");
+        CRUD::column('teacher')->label("GVCN");
         CRUD::column('status')->label("Tình trạng lớp");
         CRUD::addColumn([
             'name' => 'origin',
@@ -101,7 +110,38 @@ class GradeCrudController extends CrudController
             ]
         ]);
         CRUD::field('name')->label("Tên lớp");
+        CRUD::field('level')->label("Cấp độ");
         CRUD::field('status')->label("Tình trạng lớp");
+        CRUD::field('times')->label("Lịch học")->type("repeatable")->fields([
+            [
+                'name' => 'day',
+                'label' => 'Ngày',
+                'type' => 'select_from_array',
+                'options' => WeekDays::days(),
+                'wrapper' => [
+                    'class' => 'col-md-4 mb-3'
+                ],
+                'default' => 'monday'
+            ],
+            [
+                'name' => 'start',
+                'label' => 'Bắt đầu',
+                'type' => 'time',
+                'wrapper' => [
+                    'class' => 'col-md-4 mb-3'
+                ],
+
+            ],
+            [
+                'name' => 'end',
+                'label' => 'Kết thúc',
+                'type' => 'time',
+                'wrapper' => [
+                    'class' => 'col-md-4 mb-3'
+                ],
+
+            ]
+        ]);
         CRUD::addField([
             'name' => 'students',
             'type' => 'relationship',
@@ -110,6 +150,8 @@ class GradeCrudController extends CrudController
             'attribute' => 'name',
             'label' => 'Học sinh',
         ]);
+        CRUD::field("teacher")->label("Giáo viên chủ nhiệm");
+        CRUD::field("note")->label("Ghi chú");
         /**
          * Fields can be defined using the fluent syntax or array syntax:
          * - CRUD::field('price')->type('number');
@@ -126,5 +168,11 @@ class GradeCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+    }
+
+    public function showDetailsRow($id)
+    {
+        $grade = Grade::find($id);
+        return view("grade.detail",['grade'=>$grade]);
     }
 }

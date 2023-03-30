@@ -11,6 +11,9 @@
                 Học sinh đang học</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('old') }}"><i
                     class="nav-icon la la-user-clock"></i> Học sinh cũ</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('reserve') }}"><i
+                    class="nav-icon la la-file-archive"></i>
+                Học sinh bảo lưu</a></li>
         @if(backpack_user()->role!="viewer")
             <li class="nav-item"><a class="nav-link" href="{{ backpack_url('bonus') }}"><i
                         class="nav-icon la la-calendar"></i> Bù
@@ -31,6 +34,9 @@
         </li>
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('payment') }}"><i
                     class="nav-icon la la-file-invoice-dollar"></i> Hóa đơn chi</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('finance') }}"><i
+                    class="nav-icon la la-area-chart"></i>
+                Báo cáo tài chính</a></li>
     </ul>
 </li>
 <li class="nav-item nav-dropdown">
@@ -45,6 +51,9 @@
 <li class="nav-item nav-dropdown">
     <a class="nav-link nav-dropdown-toggle" href="#"><i class="nav-icon la la-briefcase"></i>Quản lý văn phòng</a>
     <ul class="nav-dropdown-items">
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('branch') }}"><i
+                    class="nav-icon la la-building"></i>
+                Chi nhánh</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('user') }}"><i
                     class="nav-icon la la-user"></i> Người
                 dùng</a></li>
@@ -77,4 +86,3 @@
                     class='nav-icon las la-cog'></i> Cài đặt</a></li>
     </ul>
 </li>
-

@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->longText("note");
             $table->unsignedBigInteger("staff_id");
             $table->foreign("staff_id")->references("id")->on("users");
+            $table->softDeletesDatetime();
             $table->timestamps();
         });
     }
