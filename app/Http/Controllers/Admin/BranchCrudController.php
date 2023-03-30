@@ -30,7 +30,7 @@ class BranchCrudController extends CrudController
         CRUD::setModel(\App\Models\Branch::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/branch');
         CRUD::setEntityNameStrings('Chi nhánh', 'Danh sách chi nhánh');
-//        FilterRole::filterByRole($this->crud, 'branch');
+        FilterRole::filterByRole($this->crud, 'branch');
     }
 
     /**

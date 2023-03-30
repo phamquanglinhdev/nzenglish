@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\ReserveRequest;
 use App\Models\Reserve;
 use App\Models\Student;
+use App\Utils\FilterRole;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Carbon\Carbon;
@@ -36,6 +37,7 @@ class ReserveCrudController extends CommonCrudController
         CRUD::setEntityNameStrings('Học sinh bảo lưu', 'Danh sách học sinh bảo lưu');
         $this->crud->denyAccess(["create", "show", "delete", "update"]);
         $this->crud->setOperationSetting("detailsRow", true);
+        FilterRole::filterByRole($this->crud, 'reserve');
     }
 
     /**

@@ -20,6 +20,7 @@ class Roles
         'user' => 'người dùng',
         'work' => 'nhật ký làm việc',
         'branch' => 'chi nhánh',
+        'reserve' => 'học sinh bảo lưu',
     ];
     public static array $methods = [
         'list' => 'Xem',
