@@ -19,6 +19,7 @@ class Roles
         'student' => 'học sinh đang học',
         'user' => 'người dùng',
         'work' => 'nhật ký làm việc',
+        'branch' => 'chi nhánh',
     ];
     public static array $methods = [
         'list' => 'Xem',
@@ -31,6 +32,11 @@ class Roles
         $result = [];
         foreach (self::$entries as $entry_key => $entry) {
             if ($entry_key != "user") {
+                foreach (self::$methods as $method_key => $method) {
+                    $result[] = $entry_key . "." . $method_key;
+                }
+            }
+            if ($entry_key != "branch") {
                 foreach (self::$methods as $method_key => $method) {
                     $result[] = $entry_key . "." . $method_key;
                 }
@@ -48,6 +54,7 @@ class Roles
                 $result[$entry_key . "." . $method_key] = $method . " " . $entry;
             }
         }
+        $result['finance'] = "Quản lý tài chính";
         return $result;
     }
 }

@@ -10,6 +10,9 @@ class FinanceController extends Controller
 {
     public function index(Request $request)
     {
+        if (!backpack_user()->hasRole("finance")) {
+            return redirect("errors.403");
+        }
         $year = $request->year ?? null;
         $month = $request->month ?? null;
         if ($year != null && $month != null) {
