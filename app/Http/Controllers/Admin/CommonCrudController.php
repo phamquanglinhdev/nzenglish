@@ -10,6 +10,7 @@ use App\Utils\FilterRole;
 use Backpack\CRUD\app\Exceptions\BackpackProRequiredException;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Backpack\CRUD\app\Library\Widget;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
@@ -141,7 +142,10 @@ class CommonCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-
+        Widget::add()->type('style')
+            ->content('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.8/css/intlTelInput.css');
+        Widget::add()->type('script')
+            ->content('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.8/js/intlTelInput-jquery.min.js');
         CRUD::field('origin')
             ->label("Chi nhánh")
             ->type("select_from_array")
