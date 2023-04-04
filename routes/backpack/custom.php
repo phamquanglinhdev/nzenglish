@@ -34,9 +34,11 @@ Route::group([
     Route::crud('work', 'WorkCrudController');
     Route::crud('document', 'DocumentCrudController');
     Route::crud('basket', 'BasketCrudController');
+    Route::crud('basket', 'BasketCrudController');
     Route::crud('book', 'BookCrudController');
     Route::crud('pack', 'PackCrudController');
     Route::crud('extend', 'ExtendCrudController');
+    Route::get('/extendAll', 'ExtendCrudController@extendAll')->name("extend.acceptAll");
     Route::crud('payment', 'PaymentCrudController');
     Route::crud('bonus', 'BonusCrudController');
     Route::crud('branch', 'BranchCrudController');

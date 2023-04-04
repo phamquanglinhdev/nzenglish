@@ -4,8 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Operations\ExtendOperation;
 use App\Http\Requests\ExtendRequest;
+use App\Models\Extend;
+use App\Services\ExtendStudentServices;
 use App\Utils\FilterRole;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Backpack\CRUD\app\Library\Widget;
+use Illuminate\Http\RedirectResponse;
+use Prologue\Alerts\Facades\Alert;
 
 /**
  * Class ExtendCrudController
@@ -43,6 +48,10 @@ class ExtendCrudController extends InvoiceCrudController
      */
     protected function setupListOperation()
     {
+        Widget::add([
+            'type' => 'view',
+            'view' => 'components.extend_all'
+        ]);
 //        CRUD::addButton('line', 'extend', 'view', 'crud::buttons.extend');
         parent::setupListOperation();
         $this->crud->removeColumn("pack");
@@ -102,5 +111,16 @@ class ExtendCrudController extends InvoiceCrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+    }
+
+    public function extendAll(): RedirectResponse
+    {
+        $extends = Extend::where("confirm", 0)->get();
+        foreach ($extends as $extend) {
+            $services = new ExtendStudentServices($extend->id ?? null);
+            $services->update();
+        }
+        Alert::success("Thành công");
+        return redirect()->back();
     }
 }

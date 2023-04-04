@@ -96,7 +96,11 @@
                                         <i class="las la-file-export"></i>
                                         Đã hết hạn {{$student->remaining()}} ngày
                                     </div>
-
+                                    <a href="{{route("invoice.create",["repurchase"=>$student->id])}}"
+                                       class="">
+                                        <i class="las la-credit-card"></i>
+                                        Gia hạn
+                                    </a>
                                 @else
                                     <div class="mb-1">
                                         <i class="las la-file-export"></i>
