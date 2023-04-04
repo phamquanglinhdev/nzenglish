@@ -127,6 +127,7 @@ class StudentCrudController extends CommonCrudController
         $data["grade"] = "Test";
         $data['start'] = Carbon::parse(now());
         $data['end'] = Carbon::parse(now());
+        $data['first'] = 1;
         $student = Student::create($data);
         $invoice->pack_id = 1;
         $invoice->staff_id = backpack_user()->id;
