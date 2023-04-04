@@ -124,6 +124,9 @@ class StudentCrudController extends CommonCrudController
         $request = $this->crud->validateRequest();
         $data = $this->crud->getStrippedSaveRequest($request);
         $invoice = json_decode($this->crud->getRequest()->get("invoice"))[0];
+        if ($data["avatar"] == null) {
+            $data["avatar"] = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png";
+        }
         $data["grade"] = "Test";
         $data['start'] = Carbon::parse(now());
         $data['end'] = Carbon::parse(now());
