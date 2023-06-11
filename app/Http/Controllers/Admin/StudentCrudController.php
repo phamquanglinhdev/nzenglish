@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Operations\FetchOperation;
 use App\Http\Requests\StudentRequest;
+use App\Import\StudentImport;
 use App\Models\Extend;
 use App\Models\Invoice;
 use App\Models\Reserve;
@@ -14,8 +15,9 @@ use Backpack\CRUD\app\Exceptions\BackpackProRequiredException;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Carbon\Carbon;
-use http\Client\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use Prologue\Alerts\Facades\Alert;
 
 /**
@@ -82,6 +84,18 @@ class StudentCrudController extends CommonCrudController
 
     }
 
+    public function upload(Request $request)
+    {
+        $student = $request->file("students");
+        Excel::import(new StudentImport, $student);
+        dd($student);
+    }
+
+    public function import()
+    {
+        return view("student.import");
+    }
+
     /**
      * Define what happens when the Update operation is loaded.
      *
@@ -93,7 +107,7 @@ class StudentCrudController extends CommonCrudController
         $this->setupCreateOperation();
     }
 
-    public function showDetailsRow($id)
+    public function showDetailsRow($id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View|\Illuminate\Contracts\Foundation\Application
     {
         $bag = [
             'student' => Student::find($id)
@@ -109,7 +123,7 @@ class StudentCrudController extends CommonCrudController
         return redirect()->back();
     }
 
-    public function extend(\Illuminate\Http\Request $request): JsonResponse
+    public function extend(Request $request): JsonResponse
     {
         $services = new ExtendStudentServices($request->id ?? null);
         if ($services->update()) {
@@ -120,17 +134,21 @@ class StudentCrudController extends CommonCrudController
 
     public function store()
     {
-
+        /**
+         * @var Student $student
+         */
         $request = $this->crud->validateRequest();
         $data = $this->crud->getStrippedSaveRequest($request);
+
         $invoice = json_decode($this->crud->getRequest()->get("invoice"))[0];
+        dd($data);
         if ($data["avatar"] == null) {
             $data["avatar"] = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png";
         }
-        $data["grade"] = "Test";
         $data['start'] = Carbon::parse(now());
         $data['end'] = Carbon::parse(now());
         $student = Student::create($data);
+        $student->Grades()->sync($data["grades"]);
         $invoice->pack_id = 1;
         $invoice->staff_id = backpack_user()->id;
         $invoice->student_id = $student->id;

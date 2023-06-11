@@ -80,4 +80,25 @@ class Grade extends Model
     | MUTATORS
     |--------------------------------------------------------------------------
     */
+    public static function getGrade($name)
+    {
+        if (!$name) {
+            return null;
+        }
+        $existGrade = Grade::query()->where("name", $name)->first();
+        if (!$existGrade) {
+            $dataCreate = [
+                'name' => $name,
+                'level' => $name,
+                'teacher' => 'Excel Uploaded',
+                'status' => 'Tốt',
+                'origin' => 2
+            ];
+            $grade = Grade::query()->create($dataCreate);
+//            dd($grade);
+            return $grade["id"];
+        } else {
+            return $existGrade["id"];
+        }
+    }
 }

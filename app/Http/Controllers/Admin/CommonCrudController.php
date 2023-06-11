@@ -13,6 +13,7 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Backpack\CRUD\app\Library\Widget;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Str;
 
 /**
@@ -149,6 +150,7 @@ class CommonCrudController extends CrudController
         CRUD::field('origin')
             ->label("Chi nhánh")
             ->type("select_from_array")
+            ->default( Cookie::get("origin") ?? 1)
             ->options(Branch::options());
         CRUD::field('name')->label("Tên học sinh");
         CRUD::field('birthday')->label("Ngày tháng năm sinh")->wrapper([
@@ -222,7 +224,7 @@ class CommonCrudController extends CrudController
                         'wrapper' => [
                             'class' => 'col-md-6 mb-3'
                         ],
-                        'default' => str_replace(".", "", (Invoice::max("id") + 1) / 10000),
+                        'default' => Invoice::query()->withoutGlobalScopes()->orderBy("id","DESC")->max("code")+1,
                         'attributes' => [
                             'required' => true
                         ]

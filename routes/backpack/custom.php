@@ -23,6 +23,8 @@ Route::group([
     Route::crud('student', 'StudentCrudController');
     Route::get('student/{id}/old', [StudentCrudController::class, "old", "id"])->name("student.old");
     Route::get('student/{id?}/deactive', [StudentCrudController::class, "deactive", "id"])->name("student.deactive");
+    Route::get('student/import', [StudentCrudController::class, "import"])->name("student.import");
+    Route::post('student/upload', [StudentCrudController::class, "upload"])->name("student.upload");
     Route::get('origin', [OriginController::class, "select"])->name("origin");
     Route::crud('invoice', 'InvoiceCrudController');
     Route::crud('old', 'OldCrudController');
