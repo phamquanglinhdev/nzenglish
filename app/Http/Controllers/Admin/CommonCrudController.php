@@ -14,6 +14,7 @@ use Backpack\CRUD\app\Library\Widget;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
@@ -224,7 +225,7 @@ class CommonCrudController extends CrudController
                         'wrapper' => [
                             'class' => 'col-md-6 mb-3'
                         ],
-                        'default' => ((int)Invoice::query()->withoutGlobalScopes()->orderBy("id", "DESC")->max("code")) + 1,
+                        'default' => (int)(DB::table("invoices")->latest()->first()->code) + 1,
                         'attributes' => [
                             'required' => true
                         ]
