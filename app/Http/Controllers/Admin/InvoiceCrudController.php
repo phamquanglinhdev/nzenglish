@@ -12,6 +12,7 @@ use App\Utils\AutoString;
 use App\Utils\FilterRole;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Str;
 
@@ -104,6 +105,7 @@ class InvoiceCrudController extends CrudController
             'label' => 'Nhân viên tạo'
 
         ]);
+
 
         /**
          * Columns can be defined using the fluent syntax or array syntax:
@@ -259,6 +261,12 @@ class InvoiceCrudController extends CrudController
             'name' => 'staff_id',
             'value' => backpack_user()->id,
             'type' => 'hidden',
+        ]);
+        CRUD::addField([
+            'name' => 'created_at',
+            'type' => 'date',
+            'label' => 'Ngày tạo',
+            "value" => Carbon::now()->toDateString(),
         ]);
         /**
          * Fields can be defined using the fluent syntax or array syntax:

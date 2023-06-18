@@ -7,6 +7,7 @@ use App\Utils\FilterRole;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use http\Cookie;
+use Illuminate\Support\Carbon;
 
 /**
  * Class PaymentCrudController
@@ -68,6 +69,12 @@ class PaymentCrudController extends CrudController
         CRUD::field('name')->label("Tên khoản chi");
         CRUD::field('value')->label("Số tiền")->suffix("đ");
         CRUD::field("origin")->type("hidden")->value(\Illuminate\Support\Facades\Cookie::get("origin") ?? 1);
+        CRUD::addField([
+            'name' => 'created_at',
+            'type' => 'date',
+            'label' => 'Ngày tạo hóa đơn',
+            "value" => Carbon::now()->toDateString(),
+        ]);
         /**
          * Fields can be defined using the fluent syntax or array syntax:
          * - CRUD::field('price')->type('number');
