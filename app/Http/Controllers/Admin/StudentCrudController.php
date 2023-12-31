@@ -17,6 +17,7 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Prologue\Alerts\Facades\Alert;
 
@@ -139,18 +140,23 @@ class StudentCrudController extends CommonCrudController
         $request = $this->crud->validateRequest();
         $data = $this->crud->getStrippedSaveRequest($request);
 
-        $invoice = json_decode($this->crud->getRequest()->get("invoice"))[0];
+        $invoice = json_decode($this->crud->getRequest()->get("invoice"), true)[0];
         if ($data["avatar"] == null) {
             $data["avatar"] = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png";
         }
         $data['start'] = Carbon::parse(now());
         $data['end'] = Carbon::parse(now());
-        $student = Student::create($data);
-        $student->Grades()->sync($data["grades"]);
-        $invoice->pack_id = 1;
-        $invoice->staff_id = backpack_user()->id;
-        $invoice->student_id = $student->id;
-        Invoice::create((array)($invoice));
+        DB::transaction(function () use ($invoice, $data) {
+            $invoice['origin'] = $data['origin'];
+            $student = Student::create($data);
+            $student->Grades()->sync($data["grades"] ?? []);
+            $invoice['pack_id'] = 1;
+            $invoice['staff_id'] = backpack_user()->id;
+            $invoice['student_id'] = $student->id;
+            $createdInvoice = Invoice::query()->create($invoice);
+        });
+
+
         Alert::success(trans('backpack::crud.insert_success'))->flash();
         return redirect("admin/student");
     }
